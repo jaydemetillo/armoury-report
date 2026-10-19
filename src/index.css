@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #f6f3ec;
+  --color-paper-2: #ece7dc;
+  --color-ink: #141311;
+  --color-ink-2: #3a3833;
+  --color-muted: #6f6a60;
+  --color-rule: #d6cfc1;
+  --color-ember: #c8102e;
+  --color-ember-2: #e8462f;
+  --color-ready: #1f8a5b;
+  --color-night: #0d1117;
+  --color-night-2: #171d26;
+}
+
+:root {
+  /* Tuned live via DialKit (see Hero.tsx); these are the defaults. */
+  --accent: var(--color-ember);
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 25%, transparent);
+}
+
+/* ---------- Editorial type ---------- */
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.prose-body {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+.prose-body p {
+  margin: 0 0 1.35em;
+  color: var(--color-ink-2);
+}
+
+.prose-body p strong {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 5.2em;
+  line-height: 0.82;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--color-ink);
+}
+
+.credit {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+/* ---------- kugiri split hooks ---------- */
+
+/* Units start hidden only once JS has marked the target as split-ready, so
+   the text is always readable without JS or under reduced motion. */
+[data-reveal="pending"] {
+  visibility: hidden;
+}
+
+/* ---------- Scrollytelling ---------- */
+
+.scrolly-step {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+}
+
+.scrolly-card {
+  max-width: 420px;
+  padding: 22px 24px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--color-paper) 94%, transparent);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.04), 0 20px 40px -24px rgb(0 0 0 / 0.35);
+  font-size: 17px;
+  line-height: 1.55;
+  transition: opacity 400ms ease;
+}
+
+.dark-band .scrolly-card {
+  background: color-mix(in oklab, var(--color-night-2) 92%, transparent);
+  color: #e9e5dc;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06), 0 24px 48px -24px rgb(0 0 0 / 0.7);
+}
+
+/* ---------- Charts ---------- */
+
+.chart-tip {
+  pointer-events: none;
+  position: absolute;
+  z-index: 10;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.35;
+  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 10px));
+  box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.4);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
