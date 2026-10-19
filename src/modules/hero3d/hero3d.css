@@ -119,6 +119,11 @@
   line-height: 1.55;
   color: var(--h3d-ink-soft);
 }
+/* No-WebGL fallback: a short static panel, no scroll distance. */
+.h3d--static .h3d__section { display: none; }
+.h3d--static .h3d__pin { position: relative; }
+.h3d--static .h3d__stage { position: relative; height: 40vh; height: 40svh; }
+
 @media (max-width: 640px) {
   .h3d-card {
     left: 50%;

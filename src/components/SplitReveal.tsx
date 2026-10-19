@@ -1,5 +1,6 @@
 import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode } from 'react'
 import { splitText, type TextSplit } from 'kugiri'
+import { useIsMobile } from '@/hooks/use-is-mobile'
 import { usePrefersReducedMotion } from '@/hooks/use-reduced-motion'
 
 type Variant = 'lines' | 'words'
@@ -28,7 +29,8 @@ function split(el: HTMLElement, variant: Variant): TextSplit {
     : splitText(el, { type: ['words'], mask: { lines: '.18em' } })
 }
 
-function play(s: TextSplit, variant: Variant, delay: number, stagger: number, duration: number) {
+/** `lite` (phones) drops the per-word blur, which is costly to animate on mobile GPUs. */
+function play(s: TextSplit, variant: Variant, delay: number, stagger: number, duration: number, lite: boolean) {
   const units = variant === 'lines' ? s.lines : s.words
   const frames: Keyframe[] =
     variant === 'lines'
@@ -36,10 +38,15 @@ function play(s: TextSplit, variant: Variant, delay: number, stagger: number, du
           { transform: 'translateY(105%) rotate(2deg)', opacity: 0 },
           { transform: 'none', opacity: 1 },
         ]
-      : [
-          { transform: 'translateY(90%)', opacity: 0, filter: 'blur(6px)' },
-          { transform: 'none', opacity: 1, filter: 'blur(0)' },
-        ]
+      : lite
+        ? [
+            { transform: 'translateY(90%)', opacity: 0 },
+            { transform: 'none', opacity: 1 },
+          ]
+        : [
+            { transform: 'translateY(90%)', opacity: 0, filter: 'blur(6px)' },
+            { transform: 'none', opacity: 1, filter: 'blur(0)' },
+          ]
   const animations = units.map((unit, index) =>
     unit.animate(frames, {
       duration,
@@ -74,6 +81,7 @@ export function SplitReveal({
 }: SplitRevealProps) {
   const ref = useRef<HTMLElement>(null)
   const reduce = usePrefersReducedMotion()
+  const lite = useIsMobile()
 
   useEffect(() => {
     const el = ref.current
@@ -101,7 +109,7 @@ export function SplitReveal({
       current = split(el, variant)
       width = el.clientWidth
       el.dataset.reveal = 'done'
-      play(current, variant, delay, stagger, duration)
+      play(current, variant, delay, stagger, duration, lite)
       resize.observe(el)
     }
 
@@ -129,7 +137,7 @@ export function SplitReveal({
       current?.revert()
       delete el.dataset.reveal
     }
-  }, [variant, trigger, delay, stagger, duration, replayKey, reduce])
+  }, [variant, trigger, delay, stagger, duration, replayKey, reduce, lite])
 
   return (
     <Tag ref={ref} className={className} style={style}>

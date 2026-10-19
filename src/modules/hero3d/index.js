@@ -5,6 +5,15 @@ import './hero3d.css';
 
 export { HERO3D_CONFIG, resolveConfig } from './config.js';
 
+function webglAvailable() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {
+    return false;
+  }
+}
+
 const wantsTunerFromUrl = () =>
   typeof location !== 'undefined' && new URLSearchParams(location.search).has('tune');
 
@@ -99,7 +108,34 @@ export function mountHero3D(container, options = {}) {
   let disposeTuner = null;
   let tunerLoading = null;
 
-  const scene3d = new Scene3D(canvas, cfg, { modelUrl, modelData });
+  // No WebGL (blocked by policy, very old device, lost GPU): collapse to a
+  // short static panel instead of leaving four empty viewports to scroll.
+  let scene3d = null;
+  try {
+    if (webglAvailable()) scene3d = new Scene3D(canvas, cfg, { modelUrl, modelData });
+  } catch (err) {
+    console.warn('[hero3d] WebGL unavailable:', err);
+  }
+  if (!scene3d) {
+    root.classList.add('h3d--static');
+    loadingEl.querySelector('.h3d__loading-label').textContent =
+      'The 3D model needs WebGL, which is not available in this browser.';
+    const error = new Error('WebGL unavailable');
+    onError?.(error);
+    const ready = Promise.reject(error);
+    ready.catch(() => {});
+    return {
+      root,
+      ready,
+      handle: null,
+      showTuner: () => Promise.resolve(),
+      hideTuner() {},
+      toggleTuner: () => Promise.resolve(),
+      destroy() {
+        root.remove();
+      },
+    };
+  }
 
   const ready = scene3d
     .load((ratio) => {

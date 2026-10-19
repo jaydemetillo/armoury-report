@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import type { ImageGenerationHandle } from 'img-fx'
 import { useDialKit } from 'dialkit'
 import { SafeImageGeneration } from '@/components/SafeImageGeneration'
+import { useIsMobile } from '@/hooks/use-is-mobile'
 import { CarouselDots } from '@/components/ui/carousel-dots'
 
 const slides = [
@@ -39,6 +40,12 @@ export function Hero() {
   const [leaving, setLeaving] = useState<number | null>(null)
   const [hovering, setHovering] = useState(false)
   const handles = useRef<(ImageGenerationHandle | null)[]>([])
+  const sectionRef = useRef<HTMLElement>(null)
+  // Shaders pause once the hero is off-screen, so they never compete with
+  // the scrollytelling further down for GPU time.
+  const inView = useInView(sectionRef)
+  // Phones get plain cross-fading photos instead of the WebGL loader.
+  const isMobile = useIsMobile()
 
   const dial = useDialKit('Hero', {
     autoplaySeconds: [7, 3, 14, 0.5],
@@ -83,6 +90,7 @@ export function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       aria-label="Before Armoury"
       className="relative h-[92svh] min-h-[620px] w-full overflow-hidden bg-night text-white"
     >
@@ -95,7 +103,7 @@ export function Hero() {
           transition={{ duration: 1.1, ease: [0.23, 1, 0.32, 1] }}
           aria-hidden={index !== slide}
         >
-          {index === slide || index === leaving ? (
+          {!isMobile && (index === slide || index === leaving) ? (
             <SafeImageGeneration
               key={dial.loader.preset}
               ref={(h) => {
@@ -109,6 +117,7 @@ export function Hero() {
               pixelScale={dial.loader.pixelScale}
               strength={dial.loader.strength}
               borderRadius={0}
+              paused={!inView}
               className="!absolute inset-0"
             >
               <div style={{ width: '100%', height: '100%' }} />

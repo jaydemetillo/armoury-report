@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Counter } from '@/components/Counter'
 import { useActiveStep } from '@/hooks/use-active-step'
+import { useIsMobile } from '@/hooks/use-is-mobile'
 
 const VEHICLES = 350
 const STATIONS = 23
@@ -89,6 +90,7 @@ const steps = [
 
 export function ReadinessScrolly() {
   const { active, setRef } = useActiveStep(steps.length)
+  const isMobile = useIsMobile()
   const grid = useMemo(() => gridLayout(), [])
   const stations = useMemo(() => stationLayout(), [])
 
@@ -150,15 +152,30 @@ export function ReadinessScrolly() {
                   />
                 )
               })}
-            {layout.map((p, i) => (
-              <motion.circle
-                key={i}
-                r={4.2}
-                initial={false}
-                animate={{ cx: p.x, cy: p.y, fill: fillFor(i), opacity: active === 3 ? 0.55 : 1 }}
-                transition={{ type: 'spring', stiffness: 90, damping: 18, delay: (i % 25) * 0.008 }}
-              />
-            ))}
+            {layout.map((p, i) =>
+              isMobile ? (
+                // Phones: 350 compositor-friendly CSS transitions instead of
+                // 350 JS-driven springs.
+                <circle
+                  key={i}
+                  r={4.2}
+                  style={{
+                    transform: `translate(${p.x}px, ${p.y}px)`,
+                    fill: fillFor(i),
+                    opacity: active === 3 ? 0.55 : 1,
+                    transition: 'transform 700ms cubic-bezier(0.23, 1, 0.32, 1), fill 400ms ease, opacity 400ms ease',
+                  }}
+                />
+              ) : (
+                <motion.circle
+                  key={i}
+                  r={4.2}
+                  initial={false}
+                  animate={{ cx: p.x, cy: p.y, fill: fillFor(i), opacity: active === 3 ? 0.55 : 1 }}
+                  transition={{ type: 'spring', stiffness: 90, damping: 18, delay: (i % 25) * 0.008 }}
+                />
+              ),
+            )}
           </svg>
           <p className="credit mt-3 !text-white/45">
             Illustrative. One dot ≈ one vehicle or vessel. Source: Armoury problem framing and hackathon pitch, 2023;
