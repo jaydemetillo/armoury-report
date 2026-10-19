@@ -387,7 +387,12 @@ export default function App() {
         </div>
       </footer>
 
-      <DialRoot position="bottom-right" defaultOpen={false} />
+      {/* Dev builds always show DialKit; a production build shows it only when built with VITE_DIALKIT=true. */}
+      <DialRoot
+        position="bottom-right"
+        defaultOpen={false}
+        productionEnabled={import.meta.env.VITE_DIALKIT === 'true'}
+      />
     </div>
   )
 }
