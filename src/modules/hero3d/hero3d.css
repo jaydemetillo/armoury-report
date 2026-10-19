@@ -1,0 +1,128 @@
+/* ===================================================================
+   Hero3D module styles. Everything is scoped under .h3d (the element the
+   module creates inside your container), so nothing leaks onto the page.
+   Ported from the repo's style.css: only the stage, loader and card rules.
+   =================================================================== */
+
+.h3d {
+  --h3d-serif: georgia, 'Times New Roman', times, serif;
+  --h3d-sans: -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif;
+  --h3d-ink: #121212;
+  --h3d-ink-soft: #363636;
+  --h3d-accent-green: #2fbf71;
+
+  position: relative;
+  background: #101318;
+}
+
+/* Placeholder scroll sections. Empty on purpose: their heights are the scroll
+   distance (see SCROLL.sections in config.js), and together they give the
+   module its height, identical to the original 400svh section. */
+.h3d__section {
+  display: block;
+  pointer-events: none;
+}
+
+/* The stage's track spans the whole module, so the sticky stage holds the
+   viewport exactly while the module scrolls past, then releases at its
+   bottom edge, the same range as the original in-flow sticky stage. */
+.h3d__pin {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* svh units (with vh fallback) keep the sticky stage stable on mobile
+   Safari/Chrome, where plain 100vh jumps as the browser toolbar collapses. */
+.h3d__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: radial-gradient(115% 90% at 50% 38%, #232a33 0%, #14181e 62%, #0c0f13 100%);
+  transform-origin: center center;
+}
+.h3d__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Let vertical touch scrolling pass through the WebGL canvas. */
+  touch-action: pan-y;
+}
+
+.h3d__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #14181e;
+  transition: opacity 0.6s ease;
+  z-index: 3;
+}
+.h3d__loading.is-done { opacity: 0; pointer-events: none; }
+.h3d__loading-label {
+  margin: 0;
+  font-family: var(--h3d-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+.h3d__loading-pct { color: var(--h3d-accent-green); }
+
+.h3d__cards {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.h3d-card {
+  position: absolute;
+  left: clamp(1.25rem, 6vw, 5rem);
+  bottom: clamp(1.5rem, 9vh, 6rem);
+  width: min(23rem, calc(100vw - 2.5rem));
+  box-sizing: border-box;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 10px;
+  padding: 1.35rem 1.5rem 1.45rem;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  border-left: 4px solid var(--h3d-accent-green);
+  font-family: var(--h3d-serif);
+  color: var(--h3d-ink);
+  line-height: 1.6;
+  visibility: hidden; /* gsap autoAlpha takes over */
+}
+.h3d-card__kicker {
+  margin: 0;
+  font-family: var(--h3d-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--h3d-accent-green);
+}
+.h3d-card__title {
+  font-family: var(--h3d-serif);
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0.4rem 0 0.5rem;
+}
+.h3d-card__body {
+  margin: 0;
+  font-family: var(--h3d-sans);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--h3d-ink-soft);
+}
+@media (max-width: 640px) {
+  .h3d-card {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 1.25rem;
+  }
+}

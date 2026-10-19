@@ -1,5 +1,5 @@
 {
-  "name": "app-tmp",
+  "name": "armoury-report",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,24 +10,27 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "camera-controls": "^3.1.2",
     "dialkit": "^2.0.2",
+    "gsap": "^3.15.0",
     "img-fx": "^0.5.1",
     "kugiri": "^0.5.3",
     "motion": "^12.23.0",
-    "three": "^0.180.0"
+    "postprocessing": "^6.39.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.185.1"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@types/three": "^0.185.4",
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
-    "typescript": "~6.0.2",
-    "vite": "^8.3.0",
     "tailwindcss": "^4.1.0",
-    "@tailwindcss/vite": "^4.1.0",
-    "@types/three": "^0.180.0"
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
   }
 }

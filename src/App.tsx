@@ -7,6 +7,7 @@ import { BeforeAfter } from '@/components/BeforeAfter'
 import { Figure } from '@/components/Figure'
 import { Headline } from '@/components/Headline'
 import { Hero } from '@/components/Hero'
+import { Hero3D } from '@/components/Hero3D'
 import { Journey } from '@/components/Journey'
 import { CheckTimeChart, EmtSlope, FixGrid } from '@/components/LastMile'
 import { Lessons } from '@/components/Lessons'
@@ -199,6 +200,9 @@ export default function App() {
               dashboards with them.
             </p>
           </Prose>
+
+          {/* Scroll-driven 3D model. Move this one line to place it anywhere else on the page. */}
+          <Hero3D className="mt-16" />
 
           <DashboardIterations />
 
