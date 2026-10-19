@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from 'motion/react'
-import { ImageGeneration, type ImageGenerationHandle } from 'img-fx'
+import type { ImageGenerationHandle } from 'img-fx'
+import { SafeImageGeneration } from '@/components/SafeImageGeneration'
 
 interface FigureProps {
   src: string
@@ -22,7 +23,9 @@ export function Figure({ src, alt, caption, credit, wide }: FigureProps) {
 
   return (
     <figure ref={ref} className={wide ? 'mx-auto my-16 max-w-[1100px] px-5' : 'mx-auto my-14 max-w-[760px] px-5'}>
-      <ImageGeneration
+      <SafeImageGeneration
+        fallbackSrc={src}
+        fallbackStyle={{ borderRadius: 14 }}
         ref={handle}
         preset="sweep-gradient"
         images={[src]}
@@ -31,7 +34,7 @@ export function Figure({ src, alt, caption, credit, wide }: FigureProps) {
         className="w-full"
       >
         <div role="img" aria-label={alt} style={{ width: '100%', aspectRatio: '16 / 10', borderRadius: 14 }} />
-      </ImageGeneration>
+      </SafeImageGeneration>
       <figcaption className="mt-3 flex flex-wrap justify-between gap-x-6 gap-y-1">
         <span className="text-[14px] leading-snug text-ink-2">{caption}</span>
         {credit && <span className="credit">{credit}</span>}

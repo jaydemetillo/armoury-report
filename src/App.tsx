@@ -115,7 +115,7 @@ export default function App() {
           </Chapter>
 
           <Figure
-            src="/images/checklist.jpg"
+            src={`${import.meta.env.BASE_URL}images/checklist.jpg`}
             alt="A gloved hand holding a phone showing a checklist, with a fire engine behind"
             caption="Armoury replaced station binders with a check flow built for gloves, water and urgency."
             credit="Illustration: placeholder for SCDF photography"

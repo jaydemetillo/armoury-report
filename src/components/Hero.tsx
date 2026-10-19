@@ -1,30 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ImageGeneration, type ImageGenerationHandle } from 'img-fx'
+import type { ImageGenerationHandle } from 'img-fx'
 import { useDialKit } from 'dialkit'
+import { SafeImageGeneration } from '@/components/SafeImageGeneration'
 import { CarouselDots } from '@/components/ui/carousel-dots'
 
 const slides = [
   {
-    src: '/images/station.jpg',
+    src: `${import.meta.env.BASE_URL}images/station.jpg`,
     kicker: 'The daily ritual',
     title: 'Before duty calls, everything gets checked.',
     body: 'Every day, at least 600 on-duty SCDF officers account for around 350 emergency vehicles and vessels: fire engines, ambulances, rescue appliances, gear and PPE.',
   },
   {
-    src: '/images/binders.jpg',
+    src: `${import.meta.env.BASE_URL}images/binders.jpg`,
     kicker: 'Problem 01',
     title: 'The work was slow and repetitive.',
     body: 'Crews checked hoses, water and equipment around the truck, then wrote it all down again on paper and filed it in station binders.',
   },
   {
-    src: '/images/hoses.jpg',
+    src: `${import.meta.env.BASE_URL}images/hoses.jpg`,
     kicker: 'Problem 02',
     title: 'The data was trapped.',
     body: 'Close to 40,000 checks were happening, but nobody could search, compare or analyse them to spot a pattern.',
   },
   {
-    src: '/images/night.jpg',
+    src: `${import.meta.env.BASE_URL}images/night.jpg`,
     kicker: 'Problem 03',
     title: 'HQ had limited visibility.',
     body: 'Each station downloaded, edited and printed its own checklists. Some paper forms still described older equipment models.',
@@ -33,6 +34,9 @@ const slides = [
 
 export function Hero() {
   const [slide, setSlide] = useState(0)
+  // The slide fading out keeps its shader until the cross-fade ends; every other
+  // slide is a plain image, so at most two WebGL contexts exist at once.
+  const [leaving, setLeaving] = useState<number | null>(null)
   const [hovering, setHovering] = useState(false)
   const handles = useRef<(ImageGenerationHandle | null)[]>([])
 
@@ -63,6 +67,18 @@ export function Hero() {
     }
   }, [slide, dial.loader.preset])
 
+  useEffect(() => {
+    if (leaving === null) return
+    const timer = window.setTimeout(() => setLeaving(null), 1200)
+    return () => window.clearTimeout(timer)
+  }, [leaving])
+
+  const goTo = (next: number) => {
+    if (next === slide) return
+    setLeaving(slide)
+    setSlide(next)
+  }
+
   const active = slides[slide]
 
   return (
@@ -79,22 +95,27 @@ export function Hero() {
           transition={{ duration: 1.1, ease: [0.23, 1, 0.32, 1] }}
           aria-hidden={index !== slide}
         >
-          <ImageGeneration
-            key={dial.loader.preset}
-            ref={(h) => {
-              handles.current[index] = h
-            }}
-            preset={dial.loader.preset as 'sweep-gradient' | 'pixels-organic' | 'pixels-mechanic'}
-            images={[s.src]}
-            theme="dark"
-            cardBg="#0d1117"
-            pixelScale={dial.loader.pixelScale}
-            strength={dial.loader.strength}
-            borderRadius={0}
-            className="!absolute inset-0"
-          >
-            <div style={{ width: '100%', height: '100%' }} />
-          </ImageGeneration>
+          {index === slide || index === leaving ? (
+            <SafeImageGeneration
+              key={dial.loader.preset}
+              ref={(h) => {
+                handles.current[index] = h
+              }}
+              preset={dial.loader.preset as 'sweep-gradient' | 'pixels-organic' | 'pixels-mechanic'}
+              images={[s.src]}
+              fallbackSrc={s.src}
+              theme="dark"
+              cardBg="#0d1117"
+              pixelScale={dial.loader.pixelScale}
+              strength={dial.loader.strength}
+              borderRadius={0}
+              className="!absolute inset-0"
+            >
+              <div style={{ width: '100%', height: '100%' }} />
+            </SafeImageGeneration>
+          ) : (
+            <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${s.src})` }} />
+          )}
         </motion.div>
       ))}
 
@@ -140,7 +161,7 @@ export function Hero() {
             className="mt-5 -ml-[5px] text-white"
             count={slides.length}
             value={slide}
-            onValueChange={setSlide}
+            onValueChange={goTo}
             autoplay={{ duration: dial.autoplaySeconds * 1000, paused: hovering }}
             getLabel={(i) => `Show: ${slides[i].title}`}
           />
