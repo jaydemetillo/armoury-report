@@ -7,9 +7,11 @@ import { SplitReveal } from '@/components/SplitReveal'
  */
 export function QuestionSection() {
   return (
+    // Top padding = bottom padding + the tab's height above the panel, so the
+    // space above the tab equals the space below the panel.
     <section
       aria-label="The question"
-      className="relative overflow-hidden bg-[#f3eee2] bg-cover bg-center px-3 pt-12 pb-16 sm:px-6 lg:px-[44px] lg:pt-[66px] lg:pb-[100px]"
+      className="relative overflow-hidden bg-[#f3eee2] bg-cover bg-center px-3 pt-[110px] pb-16 sm:px-6 lg:px-[44px] lg:pt-[158px] lg:pb-[100px]"
       style={{ backgroundImage: `url(${import.meta.env.BASE_URL}figma/question-paper.png)` }}
     >
       <div className="relative mx-auto max-w-[1356px]">
