@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 
 /**
- * "Holder 1" from the Armoury Report Figma file (node 239:1216): a yellow
+ * The hero intro checklist: "Holder 1" from the Armoury Report Figma file (node 239:1216): a yellow
  * folder holding the daily readiness check card, stamped CHECKED.
  *
  * Laid out at the design's own 558×754 artboard size, then scaled to fit the
@@ -14,7 +14,7 @@ const rows = ['Fire truck', 'Ambulance', 'Rescue appliance', 'Operational gear',
 
 const mono: CSSProperties = { fontFamily: "'Courier Prime', ui-monospace, monospace", lineHeight: 'normal' }
 
-export function FolderHolder({ className }: { className?: string }) {
+export function HeroIntroChecklist({ className }: { className?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
