@@ -16,7 +16,7 @@ import { NorthStar } from '@/components/NorthStar'
 import { NumbersExplorer } from '@/components/NumbersExplorer'
 import { PullQuote } from '@/components/PullQuote'
 import { QuestionSection } from '@/components/QuestionSection'
-import { ReadinessScrolly } from '@/components/ReadinessScrolly'
+import { CoolDataViz } from '@/components/CoolDataViz'
 
 function Prose({ children }: { children: ReactNode }) {
   return <div className="prose-body">{children}</div>
@@ -44,6 +44,8 @@ function Chapter({ id, number, title, children }: { id?: string; number: string;
 
 // Photo gallery hero (image carousel) is hidden for now. Set to true to bring it back.
 const SHOW_GALLERY_HERO = false
+// Cool data viz (the 350-dot scrollytelling) is hidden for now, to be moved. Set to true to bring it back.
+const SHOW_COOL_DATA_VIZ = false
 
 export default function App() {
   return (
@@ -58,7 +60,7 @@ export default function App() {
 
           <Journey />
 
-          <ReadinessScrolly />
+          {SHOW_COOL_DATA_VIZ && <CoolDataViz />}
 
           <Chapter number="01" title="A record of readiness, written on paper">
             <p>

@@ -88,7 +88,11 @@ const steps = [
   },
 ]
 
-export function ReadinessScrolly() {
+/**
+ * Cool data viz: the 350-vehicle dot scrollytelling (vehicles → officers →
+ * 23 stations → paper → 100% on Armoury), with its pinned graphic and steps.
+ */
+export function CoolDataViz() {
   const { active, setRef } = useActiveStep(steps.length)
   const isMobile = useIsMobile()
   const grid = useMemo(() => gridLayout(), [])
