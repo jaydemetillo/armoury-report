@@ -29,13 +29,6 @@ export function Headline() {
         }`}
       >
         <div>
-          <img
-            src={`${import.meta.env.BASE_URL}figma/armoury-logo.svg`}
-            alt="Armoury"
-            width={217}
-            height={48}
-            className={`mb-14 block h-auto w-[180px] sm:w-[217px] lg:mb-20 ${centred ? 'mx-auto' : ''}`}
-          />
           <p className="kicker mb-6">Product story · Singapore Civil Defence Force</p>
           <SplitReveal
             as="h1"
