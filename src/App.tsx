@@ -54,7 +54,7 @@ export default function App() {
 
         <article>
           <Prose>
-            <p className="dropcap mt-14">
+            <p className="dropcap pt-6">
               Every day, across Singapore, SCDF crews walk around their fire engines, ambulances and rescue appliances
               and check that everything is there and working, from hose couplings to breathing sets. Until recently,
               most of that work ended up in a binder.
