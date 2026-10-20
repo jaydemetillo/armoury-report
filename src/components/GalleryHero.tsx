@@ -33,7 +33,8 @@ const slides = [
   },
 ]
 
-export function Hero() {
+/** The photo gallery hero: image carousel with the "Before Armoury" issue card. */
+export function GalleryHero() {
   const [slide, setSlide] = useState(0)
   // The slide fading out keeps its shader until the cross-fade ends; every other
   // slide is a plain image, so at most two WebGL contexts exist at once.

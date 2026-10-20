@@ -6,7 +6,7 @@ import { DashboardIterations, LogsQuestions, SupplyDemand } from '@/components/A
 import { BeforeAfter } from '@/components/BeforeAfter'
 import { Figure } from '@/components/Figure'
 import { Headline } from '@/components/Headline'
-import { Hero } from '@/components/Hero'
+import { GalleryHero } from '@/components/GalleryHero'
 import { Hero3D } from '@/components/Hero3D'
 import { Journey } from '@/components/Journey'
 import { CheckTimeChart, EmtSlope, FixGrid } from '@/components/LastMile'
@@ -41,13 +41,16 @@ function Chapter({ id, number, title, children }: { id?: string; number: string;
   )
 }
 
+// Photo gallery hero (image carousel) is hidden for now. Set to true to bring it back.
+const SHOW_GALLERY_HERO = false
+
 export default function App() {
   return (
     <div id="top">
       <Masthead />
       <main>
         <Headline />
-        <Hero />
+        {SHOW_GALLERY_HERO && <GalleryHero />}
 
         <article>
           <Prose>
