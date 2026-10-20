@@ -14,6 +14,7 @@ import { Lessons } from '@/components/Lessons'
 import { Masthead } from '@/components/Masthead'
 import { NorthStar } from '@/components/NorthStar'
 import { NumbersExplorer } from '@/components/NumbersExplorer'
+import { ProblemSection } from '@/components/ProblemSection'
 import { PullQuote } from '@/components/PullQuote'
 import { QuestionSection } from '@/components/QuestionSection'
 import { CoolDataViz } from '@/components/CoolDataViz'
@@ -62,89 +63,91 @@ export default function App() {
 
           {SHOW_COOL_DATA_VIZ && <CoolDataViz />}
 
-          <Chapter number="01" title="A record of readiness, written on paper">
-            <p>
-              The status quo was liveable. Paper satisfied audit storage. FormSG and Vault had been tried, but lacked
-              the overview and history SCDF needed. Collating data was manual, and HQ could not make sense of it across
-              stations and vehicles.
-            </p>
-            <p>
-              Paper in a fire station is a strange thing. Hoses are tested daily, equipment moves, vehicles roll out,
-              and the work happens around water and urgency. Yet the official record of readiness sat on forms in a
-              binder. The friction was obvious. The bigger problem was harder to see.
-            </p>
-          </Chapter>
+          <ProblemSection>
+            <Chapter number="01" title="A record of readiness, written on paper">
+              <p>
+                The status quo was liveable. Paper satisfied audit storage. FormSG and Vault had been tried, but lacked
+                the overview and history SCDF needed. Collating data was manual, and HQ could not make sense of it across
+                stations and vehicles.
+              </p>
+              <p>
+                Paper in a fire station is a strange thing. Hoses are tested daily, equipment moves, vehicles roll out,
+                and the work happens around water and urgency. Yet the official record of readiness sat on forms in a
+                binder. The friction was obvious. The bigger problem was harder to see.
+              </p>
+            </Chapter>
 
-          <PullQuote>Paper does not compound into operational intelligence.</PullQuote>
+            <PullQuote>Paper does not compound into operational intelligence.</PullQuote>
 
-          <Prose>
-            <p>
-              A station could complete a check and a binder could store it. But HQ could not ask which stations were
-              consistently late, which appliances kept failing, which shifts were missing checks, or whether divisions
-              were following up fast enough. SCDF didn’t need a nicer checklist. It needed daily readiness data to
-              become <strong>visible, trustworthy and useful</strong>.
-            </p>
-          </Prose>
+            <Prose>
+              <p>
+                A station could complete a check and a binder could store it. But HQ could not ask which stations were
+                consistently late, which appliances kept failing, which shifts were missing checks, or whether divisions
+                were following up fast enough. SCDF didn’t need a nicer checklist. It needed daily readiness data to
+                become <strong>visible, trustworthy and useful</strong>.
+              </p>
+            </Prose>
 
-          <Chapter id="origin" number="02" title="It started as “Tinder for Checks”">
-            <p>
-              The hackathon team went to stations to watch equipment checks first-hand, talked to SCDF users and built
-              a working proof of concept. The first version was scrappy enough that the team still jokes about it,
-              but it was something users could hold, react to and improve.
-            </p>
-          </Chapter>
+            <Chapter id="origin" number="02" title="It started as “Tinder for Checks”">
+              <p>
+                The hackathon team went to stations to watch equipment checks first-hand, talked to SCDF users and built
+                a working proof of concept. The first version was scrappy enough that the team still jokes about it,
+                but it was something users could hold, react to and improve.
+              </p>
+            </Chapter>
 
-          <Figure
-            src={`${import.meta.env.BASE_URL}images/checklist.jpg`}
-            alt="A gloved hand holding a phone showing a checklist, with a fire engine behind"
-            caption="Armoury replaced station binders with a check flow built for gloves, water and urgency."
-            credit="Illustration: placeholder for SCDF photography"
-          />
+            <Figure
+              src={`${import.meta.env.BASE_URL}images/checklist.jpg`}
+              alt="A gloved hand holding a phone showing a checklist, with a fire engine behind"
+              caption="Armoury replaced station binders with a check flow built for gloves, water and urgency."
+              credit="Illustration: placeholder for SCDF photography"
+            />
 
-          <Prose>
-            <p>Even at pitch stage, the ambition went beyond digitising a form. The pitch promised six things:</p>
-            <ol className="mb-8 grid list-none gap-x-8 gap-y-3 p-0 text-[16px] sm:grid-cols-2">
-              {[
-                'Load vehicle data into a customisable CMS',
-                'See the live status of every vehicle in the fleet',
-                'Start a check on any vehicle',
-                'Let several checkers work on one check at once',
-                'Submit completed checks',
-                'Read operational insights on a dashboard',
-              ].map((item, i) => (
-                <li key={item} className="flex gap-3 border-t border-rule pt-3 text-ink-2">
-                  <span className="font-serif text-[20px] leading-none text-[var(--accent)]">{i + 1}</span>
-                  {item}
-                </li>
-              ))}
-            </ol>
-            <p>
-              The pitch even imagined Armoury spreading to SPF, SAF, RSAF and the Navy, and beyond vehicles to welfare
-              checks, building and environmental inspections. That instinct to expand would later become both an
-              opportunity and a strategic tension.
-            </p>
-          </Prose>
+            <Prose>
+              <p>Even at pitch stage, the ambition went beyond digitising a form. The pitch promised six things:</p>
+              <ol className="mb-8 grid list-none gap-x-8 gap-y-3 p-0 text-[16px] sm:grid-cols-2">
+                {[
+                  'Load vehicle data into a customisable CMS',
+                  'See the live status of every vehicle in the fleet',
+                  'Start a check on any vehicle',
+                  'Let several checkers work on one check at once',
+                  'Submit completed checks',
+                  'Read operational insights on a dashboard',
+                ].map((item, i) => (
+                  <li key={item} className="flex gap-3 border-t border-rule pt-3 text-ink-2">
+                    <span className="font-serif text-[20px] leading-none text-[var(--accent)]">{i + 1}</span>
+                    {item}
+                  </li>
+                ))}
+              </ol>
+              <p>
+                The pitch even imagined Armoury spreading to SPF, SAF, RSAF and the Navy, and beyond vehicles to welfare
+                checks, building and environmental inspections. That instinct to expand would later become both an
+                opportunity and a strategic tension.
+              </p>
+            </Prose>
 
-          <Chapter id="adoption" number="03" title="First, prove that frontliners would use it">
-            <p>
-              The original North Star was simple: <strong>the number of checks submitted</strong>. Before insight,
-              analytics or admin workflows, Armoury had to answer the most basic product question.
-            </p>
-          </Chapter>
+            <Chapter id="adoption" number="03" title="First, prove that frontliners would use it">
+              <p>
+                The original North Star was simple: <strong>the number of checks submitted</strong>. Before insight,
+                analytics or admin workflows, Armoury had to answer the most basic product question.
+              </p>
+            </Chapter>
 
-          <PullQuote cite="The first product question">Will frontliners actually use this every day?</PullQuote>
+            <PullQuote cite="The first product question">Will frontliners actually use this every day?</PullQuote>
 
-          <Prose>
-            <p>
-              The team validated with firefighters, EMTs, drivers and other operational users. Switching from paper
-              had to feel worthwhile, not just mandated. For an operational tool, adoption isn’t a vanity metric:
-              without daily submissions there is no data, no trust and no value.
-            </p>
-            <p>
-              It worked. By Q1 2026, Armoury had 100% target checklist coverage and 110,658 submissions in the
-              quarter. By Q2: <strong>113,919 submissions, 2,225 checklists and a 96.5% submission rate</strong>.
-            </p>
-          </Prose>
+            <Prose>
+              <p>
+                The team validated with firefighters, EMTs, drivers and other operational users. Switching from paper
+                had to feel worthwhile, not just mandated. For an operational tool, adoption isn’t a vanity metric:
+                without daily submissions there is no data, no trust and no value.
+              </p>
+              <p>
+                It worked. By Q1 2026, Armoury had 100% target checklist coverage and 110,658 submissions in the
+                quarter. By Q2: <strong>113,919 submissions, 2,225 checklists and a 96.5% submission rate</strong>.
+              </p>
+            </Prose>
+          </ProblemSection>
 
           <BeforeAfter />
           <CheckTimeChart />

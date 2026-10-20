@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="64" viewBox="0 0 24 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Paperclip" clip-path="url(#clip0_0_225)">
+<path id="Vector" d="M17 14V48C17 49.5913 16.3679 51.1174 15.2426 52.2426C14.1174 53.3679 12.5913 54 11 54C9.4087 54 7.88258 53.3679 6.75736 52.2426C5.63214 51.1174 5 49.5913 5 48V12C5 9.61305 5.94821 7.32387 7.63604 5.63604C9.32387 3.94821 11.6131 3 14 3C16.3869 3 18.6761 3.94821 20.364 5.63604C22.0518 7.32387 23 9.61305 23 12V44" stroke-width="3" stroke-linecap="round" stroke="#9AA0A5"/>
+</g>
+<defs>
+<clipPath id="clip0_0_225">
+<rect width="24" height="64" fill="white"/>
+</clipPath>
+</defs>
+</svg>

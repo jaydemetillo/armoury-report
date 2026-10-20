@@ -135,6 +135,34 @@ body {
   box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06), 0 24px 48px -24px rgb(0 0 0 / 0.7);
 }
 
+/* ---------- Article content on the blue grid (ProblemSection) ---------- */
+
+/* White text for contrast on #004b93. The red accent fails contrast on blue,
+   so chapter and list numbers turn white here too. */
+.on-blue .prose-body p,
+.on-blue .text-ink-2 {
+  color: rgb(255 255 255 / 0.92);
+}
+.on-blue strong,
+.on-blue .prose-body p strong,
+.on-blue .text-ink,
+.on-blue .section-title,
+.on-blue blockquote,
+.on-blue .text-\[var\(--accent\)\] {
+  color: #fff;
+}
+.on-blue .credit,
+.on-blue .text-muted,
+.on-blue figcaption.credit {
+  color: rgb(255 255 255 / 0.8) !important;
+}
+.on-blue .bg-rule {
+  background-color: rgb(255 255 255 / 0.35);
+}
+.on-blue .border-rule {
+  border-color: rgb(255 255 255 / 0.35);
+}
+
 /* ---------- Charts ---------- */
 
 .chart-tip {
