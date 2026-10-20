@@ -15,6 +15,7 @@ import { Masthead } from '@/components/Masthead'
 import { NorthStar } from '@/components/NorthStar'
 import { NumbersExplorer } from '@/components/NumbersExplorer'
 import { PullQuote } from '@/components/PullQuote'
+import { QuestionSection } from '@/components/QuestionSection'
 import { ReadinessScrolly } from '@/components/ReadinessScrolly'
 
 function Prose({ children }: { children: ReactNode }) {
@@ -53,34 +54,7 @@ export default function App() {
         {SHOW_GALLERY_HERO && <GalleryHero />}
 
         <article>
-          <Prose>
-            <p className="dropcap pt-6">
-              Every day, across Singapore, SCDF crews walk around their fire engines, ambulances and rescue appliances
-              and check that everything is there and working, from hose couplings to breathing sets. Until recently,
-              most of that work ended up in a binder.
-            </p>
-            <p>
-              Armoury began as a Hack for Public Good project in 2023 with a simple but consequential question:
-            </p>
-          </Prose>
-
-          <PullQuote cite="The question behind Armoury">
-            What if the equipment checks behind Singapore’s emergency response did not live on paper?
-          </PullQuote>
-
-          <Prose>
-            <p>
-              By mid-2026, Armoury was a maintained, stable platform used at <strong>all 23 SCDF fire stations</strong>,
-              covering <strong>100% of checklists</strong> for vehicles, equipment and PPE. It digitised high-frequency
-              operational checks, made submissions visible in real time, and gave stations and HQ a shared, live view
-              of readiness.
-            </p>
-            <p>
-              This isn’t only a story about a product. It’s about a different way to build in government: start small,
-              test with real users, find where the real problem is, and keep iterating until the product proves its
-              value or tells you what to do next.
-            </p>
-          </Prose>
+          <QuestionSection />
 
           <Journey />
 
