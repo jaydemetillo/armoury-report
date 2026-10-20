@@ -23,7 +23,7 @@ export function QuestionSection() {
         </div>
 
         <div className="relative rounded-[16px] border-2 border-[#141414] bg-[#fbf8f0] px-5 pt-10 pb-12 text-[#141414] sm:px-10 lg:rounded-[20px] lg:pt-[78px] lg:pr-[86px] lg:pb-[74px] lg:pl-[82px]">
-          <p className="m-0 text-[19px] leading-[1.5] font-light sm:text-[24px] sm:leading-[36px]">
+          <p className="m-0 text-[18px] leading-[28px] font-light">
             Armoury began as a Hack for Public Good project in 2023 with a simple but consequential question:
           </p>
 
