@@ -3,7 +3,7 @@ import { SplitReveal } from '@/components/SplitReveal'
 /**
  * "02 The question" from the Armoury Report Figma file (node 0:44): a paper
  * panel with a blue folder tab, the founding question, and the opening copy
- * beside a taped photograph (a placeholder until the photo is chosen).
+ * in the left column. The right (photo) column is left blank for now.
  */
 export function QuestionSection() {
   return (
@@ -57,7 +57,8 @@ export function QuestionSection() {
               </p>
             </div>
 
-            <PhotoPlaceholder />
+            {/* Photo column: intentionally blank until the photo is chosen. */}
+            <div aria-hidden className="hidden lg:block" />
           </div>
 
           <div className="mt-12 h-px bg-[#141414] lg:mt-[42px]" />
@@ -67,35 +68,3 @@ export function QuestionSection() {
   )
 }
 
-/** "Photograph 02": a taped polaroid. The photo itself is left as a placeholder for now. */
-function PhotoPlaceholder() {
-  return (
-    <figure className="m-0 mx-auto w-full max-w-[500px] lg:mt-[2px]">
-      <div
-        className="relative w-full rounded-[2px] bg-[#fffbf5]"
-        style={{ aspectRatio: '500 / 373', transform: 'rotate(-2.7deg)', filter: 'drop-shadow(0px 8px 9px rgba(0,0,0,0.22))' }}
-      >
-        <div
-          className="absolute grid place-items-center border border-dashed border-[#b9b2a0] bg-[#ece6d8]"
-          style={{ left: '2.8%', top: '3.75%', width: '94.4%', height: '75.34%' }}
-        >
-          <span className="font-['Courier_Prime',ui-monospace,monospace] text-[13px] tracking-[0.03em] text-[#8a8270] uppercase">
-            Photo placeholder
-          </span>
-        </div>
-        <figcaption
-          className="absolute font-['Courier_Prime',ui-monospace,monospace] text-[11px] leading-normal tracking-[0.39px] whitespace-pre text-[#141414] sm:text-[13px]"
-          style={{ left: '2.8%', top: '83.4%' }}
-        >
-          {'FIG.1  /  Checking a vehicle compartment'}
-        </figcaption>
-        {/* Tape */}
-        <div
-          aria-hidden
-          className="absolute top-[-10px] left-1/2 h-[34px] bg-[#f7e062] opacity-80"
-          style={{ width: '24%', transform: 'translateX(-50%) rotate(4deg)' }}
-        />
-      </div>
-    </figure>
-  )
-}
