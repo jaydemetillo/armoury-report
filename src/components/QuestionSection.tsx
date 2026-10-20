@@ -17,7 +17,7 @@ export function QuestionSection() {
       <div className="relative mx-auto max-w-[1356px]">
         {/* Folder tab, tucked behind the panel's top edge */}
         <div className="absolute -top-[46px] left-4 h-[64px] rounded-[16px] border-2 border-[#141414] bg-[#004b93] px-5 pt-[12px] sm:left-6 lg:-top-[58px] lg:left-[36px] lg:h-[77px] lg:w-[265px] lg:rounded-[20px] lg:px-[32px] lg:pt-[17px]">
-          <p className="m-0 text-[14px] leading-normal font-semibold tracking-[0.08em] whitespace-nowrap text-[#fbf8f0] lg:text-[20px] lg:tracking-[1.6px]">
+          <p className="m-0 font-sans text-[20px] leading-normal font-semibold tracking-[1.6px] whitespace-nowrap text-[#fbf8f0]">
             01 / THE QUESTION
           </p>
         </div>
