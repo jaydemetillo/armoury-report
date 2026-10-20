@@ -45,8 +45,6 @@ function Chapter({ id, number, title, children }: { id?: string; number: string;
 
 // Photo gallery hero (image carousel) is hidden for now. Set to true to bring it back.
 const SHOW_GALLERY_HERO = false
-// Cool data viz (the 350-dot scrollytelling) is hidden for now, to be moved. Set to true to bring it back.
-const SHOW_COOL_DATA_VIZ = false
 
 export default function App() {
   return (
@@ -60,8 +58,6 @@ export default function App() {
           <QuestionSection />
 
           <Journey />
-
-          {SHOW_COOL_DATA_VIZ && <CoolDataViz />}
 
           <ProblemSection>
             <Chapter number="01" title="A record of readiness, written on paper">
@@ -148,6 +144,9 @@ export default function App() {
               </p>
             </Prose>
           </ProblemSection>
+
+          {/* Cool data viz: the 350-dot scrollytelling. */}
+          <CoolDataViz />
 
           <BeforeAfter />
           <CheckTimeChart />
