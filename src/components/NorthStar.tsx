@@ -83,7 +83,7 @@ export function NorthStar() {
                 ]}
               />
             ) : (
-              <div className="flex items-center gap-3 text-[15px] text-muted">
+              <div className="flex items-center gap-3 text-[14px] text-muted">
                 <motion.span
                   className="h-2 rounded-full bg-[var(--accent)]"
                   initial={{ width: 0 }}
@@ -94,7 +94,7 @@ export function NorthStar() {
               </div>
             )}
           </div>
-          <p className="credit mt-2">Source: Armoury Vision &amp; Metrics; Q1 and Q3 2026 product reviews.</p>
+          <p className="credit !text-[12px] mt-2">Source: Armoury Vision &amp; Metrics; Q1 and Q3 2026 product reviews.</p>
         </div>
         <div className="relative z-10 col-start-1 row-start-1 px-5 lg:col-start-2">
           <div className="h-[35vh]" />

@@ -27,7 +27,7 @@ export function PullQuote({ children, cite, size = 'lg', tone = 'light' }: PullQ
         {`“${children}”`}
       </SplitReveal>
       {cite && (
-        <figcaption className={cn('credit mt-6 tracking-[0.12em] uppercase', tone === 'dark' && '!text-white/55')}>
+        <figcaption className={cn('credit mt-6', tone === 'dark' && '!text-white/55')}>
           {cite}
         </figcaption>
       )}

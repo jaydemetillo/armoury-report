@@ -121,9 +121,9 @@ export function NumbersExplorer() {
   return (
     <div className="mx-auto my-12 max-w-[1100px] px-5">
       <div className="grid gap-8 rounded-[20px] border border-rule bg-white/60 p-5 sm:p-8 lg:grid-cols-[300px_1fr]">
-        <div role="tablist" aria-label="Metrics" className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
+        <div role="tablist" aria-label="Metrics" className="flex gap-2 overflow-x-auto [scrollbar-width:none] lg:flex-col lg:overflow-visible [&::-webkit-scrollbar]:hidden">
           <div className="mb-3 hidden rounded-xl bg-paper-2/70 px-4 py-3 lg:block">
-            <div className="text-[13px] text-muted">Checklist coverage, every quarter</div>
+            <div className="text-[14px] text-muted">Checklist coverage, every quarter</div>
             <div className="font-serif text-[40px] leading-none">100%</div>
           </div>
           {metrics.map((m, i) => (
@@ -141,7 +141,7 @@ export function NumbersExplorer() {
                   transition={{ type: 'spring', stiffness: 500, damping: 40 }}
                 />
               )}
-              <span className={`relative block text-[13px] ${selected === i ? 'text-white/60' : 'text-muted'}`}>{m.name}</span>
+              <span className={`relative block text-[14px] ${selected === i ? 'text-white/60' : 'text-muted'}`}>{m.name}</span>
               <span className={`relative block font-serif text-[26px] leading-tight ${selected === i ? 'text-white' : 'text-ink'}`}>
                 {m.headline}
               </span>
@@ -157,12 +157,12 @@ export function NumbersExplorer() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="m-0 text-[17px] font-semibold">{metric.name}, by quarter</h3>
-              <p className="mt-1 mb-6 max-w-[48ch] text-[15px] text-muted">{metric.takeaway}</p>
+              <h3 className="m-0 text-[16px] font-semibold">{metric.name}, by quarter</h3>
+              <p className="mt-1 mb-6 max-w-[48ch] text-[14px] text-muted">{metric.takeaway}</p>
               {metric.chart()}
             </motion.div>
           </AnimatePresence>
-          <p className="credit mt-4">Source: Armoury quarterly product reviews, Q4 2025 – Q3 2026.</p>
+          <p className="credit !text-[12px] mt-4">Source: Armoury quarterly product reviews, Q4 2025 – Q3 2026.</p>
         </div>
       </div>
     </div>

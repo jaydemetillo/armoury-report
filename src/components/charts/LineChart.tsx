@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
 
 export interface Point {
@@ -23,13 +23,24 @@ interface LineChartProps {
   ariaLabel: string
 }
 
-const M = { top: 28, right: 64, bottom: 34, left: 44 }
-const W = 680
+const M = { top: 32, right: 96, bottom: 40, left: 56 }
+const DEFAULT_W = 680
 
 export function LineChart({ data, domain, ticks, format, refLines = [], height = 300, highlight, ariaLabel }: LineChartProps) {
   const ref = useRef<SVGSVGElement>(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -20% 0px' })
   const [hover, setHover] = useState<number | null>(null)
+  // Draw at the container's real pixel width so SVG text stays 16px instead of scaling down with the viewBox.
+  const [W, setW] = useState(DEFAULT_W)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const update = () => setW(Math.max(280, Math.round(el.getBoundingClientRect().width)))
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   const iw = W - M.left - M.right
   const ih = height - M.top - M.bottom
@@ -51,7 +62,7 @@ export function LineChart({ data, domain, ticks, format, refLines = [], height =
         {ticks.map((t) => (
           <g key={t}>
             <line x1={M.left} x2={W - M.right} y1={y(t)} y2={y(t)} stroke="var(--color-rule)" strokeWidth={1} />
-            <text x={M.left - 10} y={y(t)} dy="0.32em" textAnchor="end" className="fill-muted text-[12px] tabular">
+            <text x={M.left - 10} y={y(t)} dy="0.32em" textAnchor="end" className="fill-muted text-[16px] tabular">
               {format(t)}
             </text>
           </g>
@@ -67,13 +78,13 @@ export function LineChart({ data, domain, ticks, format, refLines = [], height =
               strokeDasharray="4 5"
               strokeWidth={1.25}
             />
-            <text x={W - M.right + 8} y={y(r.value)} dy="0.32em" className="fill-ink-2 text-[12px]">
+            <text x={W - M.right + 8} y={y(r.value)} dy="0.32em" className="fill-ink-2 text-[16px]">
               {r.label}
             </text>
           </g>
         ))}
         {data.map((d, i) => (
-          <text key={d.label} x={x(i)} y={height - 8} textAnchor="middle" className="fill-muted text-[12px]">
+          <text key={d.label} x={x(i)} y={height - 10} textAnchor="middle" className="fill-muted text-[16px]">
             {d.label}
           </text>
         ))}
@@ -106,10 +117,10 @@ export function LineChart({ data, domain, ticks, format, refLines = [], height =
             />
             {labelled.has(i) && (
               <motion.text
-                x={x(i)}
-                y={y(d.value) - 14}
-                textAnchor="middle"
-                className="fill-ink text-[14px] font-semibold tabular"
+                x={i === data.length - 1 ? x(i) - 6 : x(i)}
+                y={i === data.length - 1 ? y(d.value) - 16 : y(d.value) - 14}
+                textAnchor={i === data.length - 1 ? 'end' : 'middle'}
+                className="fill-ink text-[16px] font-semibold tabular [paint-order:stroke] stroke-paper stroke-[5px]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: inView ? 1 : 0 }}
                 transition={{ delay: 1.3 }}

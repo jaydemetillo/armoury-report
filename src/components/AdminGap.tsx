@@ -29,7 +29,7 @@ export function DashboardIterations() {
   const ver = versions[i]
   return (
     <figure className="mx-auto my-14 max-w-[860px] px-5">
-      <figcaption className="mb-4 text-[17px] font-semibold">Three dashboards, one lesson: show the decision, not the data</figcaption>
+      <figcaption className="mb-4 text-[16px] font-semibold">Three dashboards, one lesson: show the decision, not the data</figcaption>
       <div className="grid items-center gap-8 rounded-[20px] bg-paper-2/60 p-6 sm:grid-cols-[220px_1fr] sm:p-8">
         <div className="grid grid-cols-3 gap-2" aria-hidden>
           {ver.tiles.map((t, k) => (
@@ -48,7 +48,7 @@ export function DashboardIterations() {
                 key={x.v}
                 onClick={() => setI(k)}
                 aria-pressed={i === k}
-                className={`cursor-pointer rounded-full border px-4 py-1 text-[14px] font-medium transition-colors ${
+                className={`cursor-pointer rounded-full border px-4 py-1 text-[16px] font-medium transition-colors ${
                   i === k ? 'border-ink bg-ink text-white' : 'border-rule bg-transparent text-ink-2 hover:border-ink'
                 }`}
               >
@@ -84,7 +84,7 @@ const answer = {
 export function LogsQuestions() {
   return (
     <figure className="mx-auto my-12 max-w-[680px] px-5">
-      <figcaption className="mb-3 text-[17px] font-semibold">What Logs asked, and what Armoury could answer</figcaption>
+      <figcaption className="mb-3 text-[16px] font-semibold">What Logs asked, and what Armoury could answer</figcaption>
       <ul className="m-0 list-none divide-y divide-rule border-y border-rule p-0">
         {questions.map((x, k) => {
           const a = answer[x.a]
@@ -98,7 +98,7 @@ export function LogsQuestions() {
               transition={{ delay: k * 0.12 }}
             >
               <span className="text-[16px] text-ink">{x.q}</span>
-              <span className="flex shrink-0 items-center gap-2 text-[13px] font-semibold" style={{ color: a.color }}>
+              <span className="flex shrink-0 items-center gap-2 text-[16px] font-semibold" style={{ color: a.color }}>
                 <span aria-hidden className="grid h-6 w-6 place-items-center rounded-full text-white" style={{ background: a.color }}>
                   {a.icon}
                 </span>
@@ -119,12 +119,12 @@ export function SupplyDemand() {
     `rounded-2xl border p-5 transition-all duration-300 ${focus && focus !== side ? 'opacity-40' : 'opacity-100'}`
   return (
     <figure className="mx-auto my-14 max-w-[960px] px-5" onPointerLeave={() => setFocus(null)}>
-      <figcaption className="mb-4 text-[17px] font-semibold">Integration over building</figcaption>
+      <figcaption className="mb-4 text-[16px] font-semibold">Integration over building</figcaption>
       <div className="grid items-center gap-4 md:grid-cols-[1fr_auto_1fr]">
         <div className={box('demand')} style={{ borderColor: 'var(--accent)' }} onPointerEnter={() => setFocus('demand')}>
           <div className="kicker">Demand signal</div>
           <div className="mt-1 font-serif text-[32px] leading-none">Armoury</div>
-          <p className="m-0 mt-3 text-[15px] text-ink-2">Usage, issues, readiness and missing equipment, straight from daily checks.</p>
+          <p className="m-0 mt-3 text-[16px] text-ink-2">Usage, issues, readiness and missing equipment, straight from daily checks.</p>
         </div>
         <div className="flex flex-col items-center gap-2 py-2 text-center">
           <svg width="120" height="24" viewBox="0 0 120 24" aria-hidden className="rotate-90 md:rotate-0">
@@ -137,12 +137,12 @@ export function SupplyDemand() {
               transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
             />
           </svg>
-          <div className="rounded-full bg-ink px-3 py-1 text-[12px] font-semibold text-white">TFTD · SCDF data branch</div>
+          <div className="rounded-full bg-ink px-3 py-1 text-[14px] font-semibold text-white">TFTD · SCDF data branch</div>
         </div>
         <div className={box('supply')} style={{ borderColor: 'var(--color-ink-2)' }} onPointerEnter={() => setFocus('supply')}>
           <div className="kicker !text-ink-2">Supply signal</div>
           <div className="mt-1 font-serif text-[32px] leading-none">ILMS</div>
-          <p className="m-0 mt-3 text-[15px] text-ink-2">Inventory, stock, procurement and replacement: the system that owns supply.</p>
+          <p className="m-0 mt-3 text-[16px] text-ink-2">Inventory, stock, procurement and replacement: the system that owns supply.</p>
         </div>
       </div>
     </figure>

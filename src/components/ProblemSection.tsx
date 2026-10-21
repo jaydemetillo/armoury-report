@@ -8,21 +8,21 @@ import type { CSSProperties, ReactNode } from 'react'
  */
 const cards = [
   {
-    no: 'NO. 1',
+    no: 'No. 1',
     title: 'The work was slow and repetitive.',
     body: 'Frontliners had to complete physical checks, often around vehicles, hoses, water, and equipment, then record them on paper.',
     rotate: 1,
     offset: 40,
   },
   {
-    no: 'NO. 2',
+    no: 'No. 2',
     title: 'The data was trapped.',
     body: 'Close to 40,000 checks were happening, but the information could not be easily analysed, compared, searched, or used to spot patterns.',
     rotate: -1,
     offset: 76,
   },
   {
-    no: 'NO. 3',
+    no: 'No. 3',
     title: 'Every station had its own version.',
     body: 'Stations could modify and print their own checklists, creating inconsistencies across the force. Some forms would even reference older equipment models.',
     rotate: 1,
@@ -40,13 +40,13 @@ export function ProblemSection({ children }: { children: ReactNode }) {
       style={{ backgroundImage: `url(${base}figma/problem-grid.svg)`, backgroundSize: '1440px 1160px', backgroundRepeat: 'repeat' }}
     >
       <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-[80px]">
-        <p className="m-0 font-['Courier_Prime',ui-monospace,monospace] text-[14px] leading-normal font-bold tracking-[1.12px]">
-          02 / THE PROBLEM
+        <p className="m-0 font-sans text-[14px] leading-normal font-semibold">
+          02 / The problem
         </p>
         <h2 className="m-0 mt-6 font-serif text-[clamp(3.5rem,9vw,110px)] leading-[0.95] font-normal tracking-[-0.01em] lg:mt-[29px] lg:leading-[104px]">
           Paper won’t cut it
         </h2>
-        <p className="m-0 mt-6 max-w-[613px] font-['Libre_Caslon_Text',Georgia,serif] text-[19px] leading-[1.55] sm:text-[22px] sm:leading-[34px] lg:mt-[34px]">
+        <p className="m-0 mt-6 max-w-[613px] font-['Libre_Caslon_Text',Georgia,serif] text-[16px] leading-[1.55] sm:text-[22px] sm:leading-[34px] lg:mt-[34px]">
           Before Armoury, much of this work lived in binders, printed Excel sheets, station-level templates, and manual
           follow-ups. That meant three things.
         </p>
@@ -65,14 +65,14 @@ export function ProblemSection({ children }: { children: ReactNode }) {
                   height={64}
                   className="absolute top-[-18px] right-[66px] block"
                 />
-                <p className="m-0 font-['Courier_Prime',ui-monospace,monospace] text-[15px] leading-normal font-bold tracking-[1.2px] text-[#c8372d]">
+                <p className="m-0 font-sans text-[14px] leading-normal font-semibold text-[#c8372d]">
                   {card.no}
                 </p>
                 <div className="mt-[11px] h-[2px] max-w-[318px] bg-[#141414]" />
                 <h3 className="m-0 mt-[18px] max-w-[330px] font-serif text-[44px] leading-[1] font-normal tracking-[-0.5px] sm:text-[50px] sm:leading-[50px]">
                   {card.title}
                 </h3>
-                <p className="m-0 mt-8 max-w-[318px] font-['Libre_Caslon_Text',Georgia,serif] text-[18px] leading-[28px]">
+                <p className="m-0 mt-8 max-w-[318px] font-['Libre_Caslon_Text',Georgia,serif] text-[16px] leading-[28px]">
                   {card.body}
                 </p>
               </article>

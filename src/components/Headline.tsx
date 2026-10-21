@@ -54,7 +54,7 @@ export function Headline() {
             How a paper checklist problem became Armoury, the platform SCDF now uses every day to keep its
             emergency vehicles, equipment and frontline crews ready.
           </SplitReveal>
-          <div className={`mt-9 flex flex-wrap items-center ${centred ? 'justify-center' : ''} gap-x-4 gap-y-1 text-[13px] text-white/55`}>
+          <div className={`mt-9 flex flex-wrap items-center ${centred ? 'justify-center' : ''} gap-x-4 gap-y-1 text-[14px] text-white/55`}>
             <span className="font-semibold text-white">By the Armoury team, Open Government Products</span>
             <span aria-hidden>·</span>
             <time dateTime="2026-10">October 2026</time>

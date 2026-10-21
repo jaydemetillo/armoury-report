@@ -42,7 +42,7 @@ export function Lessons() {
               setTab(id)
               setOpen(0)
             }}
-            className={`relative cursor-pointer pb-3 text-[15px] font-medium ${tab === id ? 'text-ink' : 'text-muted hover:text-ink'}`}
+            className={`relative cursor-pointer pb-3 text-[14px] font-medium ${tab === id ? 'text-ink' : 'text-muted hover:text-ink'}`}
           >
             {label}
             {tab === id && <motion.span layoutId="lesson-tab" className="absolute right-0 bottom-[-1px] left-0 h-[2px] bg-[var(--accent)]" />}
@@ -57,7 +57,7 @@ export function Lessons() {
               aria-expanded={open === i}
               className="flex w-full cursor-pointer items-baseline gap-5 py-4 text-left"
             >
-              <span className="w-6 shrink-0 text-[13px] text-muted tabular">{String(i + 1).padStart(2, '0')}</span>
+              <span className="w-6 shrink-0 text-[16px] text-muted tabular">{String(i + 1).padStart(2, '0')}</span>
               <span className="flex-1 font-serif text-[26px] leading-tight">{title}</span>
               <motion.span aria-hidden animate={{ rotate: open === i ? 45 : 0 }} className="text-[22px] text-muted">
                 +

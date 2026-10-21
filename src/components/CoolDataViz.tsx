@@ -3,11 +3,14 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Counter } from '@/components/Counter'
 import { useActiveStep } from '@/hooks/use-active-step'
 import { useIsMobile } from '@/hooks/use-is-mobile'
+import { FIREHOUSE_BODY, FIREHOUSE_H, FIREHOUSE_OUTER, FIREHOUSE_RING, FIREHOUSE_W } from '@/components/firehouse-path'
 
 const VEHICLES = 350
 const STATIONS = 23
+/** Station view shows a full 4 x 4 block per firehouse (23 x 16), so 18 extra dots fade in with it. */
+const STATION_DOTS = STATIONS * 16
 const W = 640
-const H = 520
+const H = 480
 
 type Layout = { x: number; y: number }[]
 
@@ -22,17 +25,29 @@ function gridLayout(): Layout {
   }))
 }
 
-/** 23 station clusters of ~15 vehicles each. */
+const OUTLINE_SCALE = 0.17
+const DOT_GAP = 12.5
+const STATION_COLS = 6
+const STATION_ROW_Y = (row: number) => 56 + row * 123
+
+/** Centre of station `s`'s outline. */
+function stationCentre(s: number) {
+  const cellW = W / STATION_COLS
+  const row = Math.floor(s / STATION_COLS)
+  return { x: (s % STATION_COLS) * cellW + cellW / 2 + (row === 3 ? cellW / 2 : 0), y: STATION_ROW_Y(row) }
+}
+
+/** 23 firehouses of ~15 vehicles each: a 4 x 4 block centred in each outline's body. */
 function stationLayout(): Layout {
-  const cols = 6
-  const cellW = W / cols
-  const cellH = H / 4
-  return Array.from({ length: VEHICLES }, (_, i) => {
+  return Array.from({ length: STATION_DOTS }, (_, i) => {
     const station = i % STATIONS
     const slot = Math.floor(i / STATIONS)
-    const cx = (station % cols) * cellW + cellW / 2 + (Math.floor(station / cols) === 3 ? cellW / 2 : 0)
-    const cy = Math.floor(station / cols) * cellH + cellH / 2
-    return { x: cx + ((slot % 4) - 1.5) * 13, y: cy + (Math.floor(slot / 4) - 1.5) * 13 }
+    const c = stationCentre(station)
+    const bodyY = (FIREHOUSE_BODY.cy - FIREHOUSE_H / 2) * OUTLINE_SCALE
+    return {
+      x: c.x + ((slot % 4) - 1.5) * DOT_GAP,
+      y: c.y + bodyY + (Math.floor(slot / 4) - 1.5) * DOT_GAP,
+    }
   })
 }
 
@@ -98,7 +113,10 @@ export function CoolDataViz() {
   const grid = useMemo(() => gridLayout(), [])
   const stations = useMemo(() => stationLayout(), [])
 
-  const layout = active === 2 || active === 3 ? stations : grid
+  const inStations = active === 2 || active === 3
+  // The 18 extra dots only exist in the station view, parked in their slots the rest of the time.
+  const layout = inStations ? stations : [...grid, ...stations.slice(VEHICLES)]
+  const opacityFor = (i: number) => (i >= VEHICLES && !inStations ? 0 : active === 3 ? 0.55 : 1)
   const fillFor = (i: number) => {
     switch (active) {
       case 0:
@@ -118,9 +136,9 @@ export function CoolDataViz() {
 
   return (
     <section id="paper" className="dark-band relative bg-night text-[#e9e5dc]">
-      <div className="mx-auto grid max-w-[1240px] grid-cols-1 lg:grid-cols-[1fr_440px]">
-        <div className="sticky top-12 col-start-1 row-start-1 flex h-[calc(100svh-3rem)] flex-col justify-center self-start px-5 py-8">
-          <div className="mb-4 min-h-[92px]">
+      <div className="mx-auto grid w-full max-w-[1720px] grid-cols-1 lg:grid-cols-[1fr_440px]">
+        <div className="sticky top-12 col-start-1 row-start-1 grid h-[calc(100svh-3rem)] grid-rows-[auto_minmax(0,1fr)_auto_auto] content-center gap-y-3 self-start px-5 py-6 lg:col-start-1 lg:col-end-3 lg:grid-cols-[300px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)_auto_auto] lg:gap-x-8 lg:py-4">
+          <div className="min-h-[92px] lg:col-start-1 lg:row-start-1 lg:self-start lg:pt-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -132,28 +150,40 @@ export function CoolDataViz() {
                 <div className="font-serif text-[clamp(3rem,7vw,5.5rem)] leading-none tabular">
                   <Counter value={step.stat.value} suffix={step.stat.suffix} duration={1.1} />
                 </div>
-                <div className="mt-1 text-[13px] tracking-[0.12em] text-white/55 uppercase">{step.stat.label}</div>
+                <div className="mt-1 text-[16px] text-white/55">{step.stat.label}</div>
               </motion.div>
             </AnimatePresence>
           </div>
-          <svg viewBox={`0 0 ${W} ${H}`} className="h-auto max-h-[62svh] w-full" role="img" aria-label={step.stat.label}>
+          <svg viewBox={`0 0 ${W} ${H}`} className="h-full max-h-full min-h-0 w-full lg:col-start-2 lg:row-start-1" role="img" aria-label={step.stat.label}>
             {active >= 2 && active <= 3 &&
-              Array.from({ length: STATIONS }, (_, s) => {
-                const p = stations[s]
+              Array.from({ length: STATIONS }, (_, st) => {
+                const c = stationCentre(st)
+                const tf = `translate(${c.x - (FIREHOUSE_W * OUTLINE_SCALE) / 2} ${c.y - (FIREHOUSE_H * OUTLINE_SCALE) / 2}) scale(${OUTLINE_SCALE})`
                 return (
-                  <motion.rect
-                    key={s}
-                    x={p.x - 13 * 2.3}
-                    y={p.y - 13 * 2.3 + 13 * 1.5}
-                    width={13 * 4.6}
-                    height={13 * 4.6}
-                    rx={8}
-                    fill="none"
-                    stroke="rgb(255 255 255 / 0.12)"
-                    strokeDasharray={active === 3 ? '3 4' : undefined}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  />
+                  <g key={st} transform={tf}>
+                    {/* Grey outline while stations print their own checklists... */}
+                    <motion.path
+                      d={FIREHOUSE_RING}
+                      fillRule="evenodd"
+                      fill="rgb(255 255 255 / 0.12)"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: active === 2 ? 1 : 0 }}
+                      transition={{ duration: 0.6 }}
+                    />
+                    {/* ...then the same shape turns into a dotted line on paper. */}
+                    <motion.path
+                      d={FIREHOUSE_OUTER}
+                      fill="none"
+                      stroke="rgb(255 255 255 / 0.3)"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeDasharray="0.1 5"
+                      vectorEffect="non-scaling-stroke"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: active === 3 ? 1 : 0 }}
+                      transition={{ duration: 0.6 }}
+                    />
+                  </g>
                 )
               })}
             {layout.map((p, i) =>
@@ -166,7 +196,7 @@ export function CoolDataViz() {
                   style={{
                     transform: `translate(${p.x}px, ${p.y}px)`,
                     fill: fillFor(i),
-                    opacity: active === 3 ? 0.55 : 1,
+                    opacity: opacityFor(i),
                     transition: 'transform 700ms cubic-bezier(0.23, 1, 0.32, 1), fill 400ms ease, opacity 400ms ease',
                   }}
                 />
@@ -175,13 +205,27 @@ export function CoolDataViz() {
                   key={i}
                   r={4.2}
                   initial={false}
-                  animate={{ cx: p.x, cy: p.y, fill: fillFor(i), opacity: active === 3 ? 0.55 : 1 }}
+                  animate={{ cx: p.x, cy: p.y, fill: fillFor(i), opacity: opacityFor(i) }}
                   transition={{ type: 'spring', stiffness: 90, damping: 18, delay: (i % 25) * 0.008 }}
                 />
               ),
             )}
           </svg>
-          <p className="credit mt-3 !text-white/45">
+          <div className="min-h-[3.25rem] lg:col-start-1 lg:col-end-3 lg:row-start-2">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={active}
+                className="m-0 text-[16px] leading-[1.55] text-[#e9e5dc]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.9, ease: 'easeInOut' }}
+              >
+                {step.text}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          <p className="credit !text-[12px] !text-white/45 lg:col-start-1 lg:col-end-3 lg:row-start-3">
             Illustrative. One dot ≈ one vehicle or vessel. Source: Armoury problem framing and hackathon pitch, 2023;
             Q3 2026 product review.
           </p>
@@ -189,12 +233,9 @@ export function CoolDataViz() {
 
         <div className="relative z-10 col-start-1 row-start-1 px-5 lg:col-start-2">
           <div className="h-[30vh]" />
-          {steps.map((s, i) => (
-            <div key={i} ref={setRef(i)} className="scrolly-step">
-              <p className="scrolly-card m-0" style={{ opacity: active === i ? 1 : 0.35 }}>
-                {s.text}
-              </p>
-            </div>
+          {steps.map((_, i) => (
+            // Invisible scroll markers: they only drive the active step; the text fades in the frame.
+            <div key={i} ref={setRef(i)} className="scrolly-step" aria-hidden />
           ))}
           <div className="h-[40vh]" />
         </div>

@@ -243,7 +243,7 @@ export default function App() {
                 <span className="h-px flex-1 bg-rule" />
               </div>
               <h2 className="section-title m-0">Armoury in numbers</h2>
-              <p className="mt-4 text-ink-2">Choose a metric to see how it moved over three quarters.</p>
+              <p className="mt-4 text-[14px] text-ink-2">Choose a metric to see how it moved over three quarters.</p>
             </div>
             <NumbersExplorer />
           </section>
@@ -261,8 +261,8 @@ export default function App() {
 
           <div className="mx-auto mb-10 grid max-w-[860px] gap-6 px-5 sm:grid-cols-2">
             <div className="rounded-2xl border border-rule p-6">
-              <div className="mb-3 text-[13px] font-semibold tracking-[0.1em] text-ready uppercase">Still covered</div>
-              <ul className="m-0 list-none space-y-2 p-0 text-[15px] text-ink-2">
+              <div className="mb-3 text-[14px] font-semibold text-ready">Still covered</div>
+              <ul className="m-0 list-none space-y-2 p-0 text-[16px] text-ink-2">
                 {[
                   'The product keeps running',
                   'Security issues get fixed',
@@ -276,13 +276,13 @@ export default function App() {
               </ul>
             </div>
             <div className="rounded-2xl border border-rule p-6">
-              <div className="mb-3 text-[13px] font-semibold tracking-[0.1em] text-muted uppercase">Out of scope</div>
-              <ul className="m-0 list-none space-y-2 p-0 text-[15px] text-muted">
+              <div className="mb-3 text-[14px] font-semibold text-muted">Out of scope</div>
+              <ul className="m-0 list-none space-y-2 p-0 text-[16px] text-muted">
                 {['New features', 'Cosmetic optimisations', 'Open-ended roadmap expansion'].map((x) => (
                   <li key={x}>– {x}</li>
                 ))}
               </ul>
-              <p className="m-0 mt-4 text-[14px] text-muted">…unless separately funded or reactivated.</p>
+              <p className="m-0 mt-4 text-[16px] text-muted">…unless separately funded or reactivated.</p>
             </div>
           </div>
 
@@ -302,14 +302,14 @@ export default function App() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="text-[12px] font-semibold tracking-[0.12em] text-muted uppercase">{k}</div>
+                <div className="text-[14px] font-semibold text-muted">{k}</div>
                 <div className="mt-1 font-serif text-[28px] leading-tight">{t}</div>
-                <p className="m-0 mt-2 text-[15px] leading-relaxed text-ink-2">{b}</p>
+                <p className="m-0 mt-2 text-[16px] leading-relaxed text-ink-2">{b}</p>
               </motion.div>
             ))}
           </div>
           <Prose>
-            <p className="mt-10">
+            <p className="mt-10 text-[14px]">
               A strong partner relationship isn’t enough on its own. The next problem still has to be proven.
             </p>
           </Prose>
@@ -354,7 +354,7 @@ export default function App() {
       </main>
 
       <footer className="mx-auto max-w-[860px] px-5 py-14">
-        <div className="credit grid gap-6 sm:grid-cols-2">
+        <div className="credit !text-[12px] grid gap-6 sm:grid-cols-2">
           <div>
             <div className="mb-2 font-semibold text-ink">Sources</div>
             Armoury working document and Hack for Public Good pitch (2023); Armoury closure sharing draft; Vision &amp;

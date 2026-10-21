@@ -26,14 +26,13 @@ export function Masthead() {
             className="block h-5 w-auto"
           />
         </a>
-        <nav aria-label="Chapters" className="hidden gap-5 text-[13px] lg:flex">
+        <nav aria-label="Chapters" className="hidden gap-5 text-[16px] lg:flex">
           {chapters.map(([href, label]) => (
             <a key={href} href={href} className="text-white no-underline transition-opacity hover:opacity-75">
               {label}
             </a>
           ))}
         </nav>
-        <span className="text-[12px] tracking-[0.14em] uppercase">OGP Stories</span>
       </div>
       <motion.div
         className="absolute bottom-[-1px] left-0 h-[2px] w-full origin-left bg-[var(--accent)]"

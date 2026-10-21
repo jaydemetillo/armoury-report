@@ -29,7 +29,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
       <div ref={ref} role="img" aria-label={ariaLabel} className="flex flex-col gap-4">
         {data.map((d, i) => (
           <div key={d.label} className="grid grid-cols-[minmax(90px,150px)_1fr] items-center gap-4">
-            <div className="text-[14px] leading-tight text-ink-2">{d.label}</div>
+            <div className="text-[16px] leading-tight text-ink-2">{d.label}</div>
             <div className="relative h-9" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)}>
               <motion.div
                 className="absolute inset-y-1 left-0 rounded-r-[4px]"
@@ -39,7 +39,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
                 transition={{ duration: 1.1, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
               />
               <motion.span
-                className="absolute top-1/2 -translate-y-1/2 pl-2 text-[15px] font-semibold text-ink tabular"
+                className="absolute top-1/2 -translate-y-1/2 pl-2 text-[16px] font-semibold text-ink tabular"
                 initial={{ left: '0%', opacity: 0 }}
                 animate={inView ? { left: `${(d.value / max) * 100}%`, opacity: 1 } : {}}
                 transition={{ duration: 1.1, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
@@ -69,7 +69,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
             onPointerLeave={() => setHover(null)}
           >
             <motion.div
-              className="text-center text-[15px] font-semibold text-ink tabular"
+              className="text-center text-[16px] font-semibold text-ink tabular"
               initial={{ opacity: 0 }}
               animate={{ opacity: inView ? 1 : 0 }}
               transition={{ delay: 0.6 + i * 0.12 }}
@@ -97,7 +97,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
       </div>
       <div className="flex gap-[6%] px-[6%] pt-2">
         {data.map((d) => (
-          <div key={d.label} className="flex-1 text-center text-[13px] text-muted">
+          <div key={d.label} className="flex-1 text-center text-[16px] text-muted">
             {d.label}
           </div>
         ))}

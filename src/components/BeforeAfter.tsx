@@ -41,7 +41,7 @@ export function BeforeAfter() {
     <section aria-label="Before and after Armoury" className="mx-auto my-16 max-w-[1000px] px-5">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <h3 className="m-0 font-serif text-[34px] leading-tight font-normal">What changed for SCDF</h3>
-        <div role="radiogroup" aria-label="Show" className="relative flex rounded-full bg-paper-2 p-1 text-[14px] font-medium">
+        <div role="radiogroup" aria-label="Show" className="relative flex rounded-full bg-paper-2 p-1 text-[16px] font-medium">
           {(['Before', 'After'] as const).map((label) => {
             const on = (label === 'After') === after
             return (
@@ -69,12 +69,12 @@ export function BeforeAfter() {
       <div className="divide-y divide-rule border-y border-rule">
         {rows.map((r, i) => (
           <div key={r.area} className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[200px_1fr] sm:gap-6">
-            <div className="text-[13px] font-semibold tracking-[0.08em] text-muted uppercase">{r.area}</div>
+            <div className="text-[16px] font-semibold text-muted">{r.area}</div>
             <div className="relative min-h-[1.6em]">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.p
                   key={after ? 'a' : 'b'}
-                  className={`m-0 text-[17px] leading-snug ${after ? 'text-ink' : 'text-muted'}`}
+                  className={`m-0 text-[16px] leading-snug ${after ? 'text-ink' : 'text-muted'}`}
                   initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}

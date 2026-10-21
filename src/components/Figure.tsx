@@ -58,7 +58,7 @@ export function Figure({ src, alt, caption, credit, wide }: FigureProps) {
         </SafeImageGeneration>
       )}
       <figcaption className="mt-3 flex flex-wrap justify-between gap-x-6 gap-y-1">
-        <span className="text-[14px] leading-snug text-ink-2">{caption}</span>
+        <span className="text-[16px] leading-snug text-ink-2">{caption}</span>
         {credit && <span className="credit">{credit}</span>}
       </figcaption>
     </figure>

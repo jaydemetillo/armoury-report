@@ -1,28 +1,17 @@
 import { SplitReveal } from '@/components/SplitReveal'
 
 /**
- * "02 The question" from the Armoury Report Figma file (node 0:44): a paper
- * panel with a blue folder tab, the founding question, and the opening copy
- * in the left column. The right (photo) column is left blank for now.
+ * "01 / The question": the founding question and the opening copy. Laid out like the other numbered sections
+ * (label, heading, content on the page background) with no panel, tab or paper texture. The right (photo) column
+ * is left blank for now.
  */
 export function QuestionSection() {
   return (
-    // Top padding = bottom padding + the tab's height above the panel, so the
-    // space above the tab equals the space below the panel.
-    <section
-      aria-label="The question"
-      className="relative overflow-hidden bg-[#f3eee2] bg-cover bg-center px-3 pt-[110px] pb-16 sm:px-6 lg:px-[44px] lg:pt-[158px] lg:pb-[100px]"
-      style={{ backgroundImage: `url(${import.meta.env.BASE_URL}figma/question-paper.png)` }}
-    >
-      <div className="relative mx-auto max-w-[1356px]">
-        {/* Folder tab, tucked behind the panel's top edge */}
-        <div className="absolute -top-[46px] left-4 h-[64px] rounded-[16px] border-2 border-[#141414] bg-[#004b93] px-5 pt-[12px] sm:left-6 lg:-top-[58px] lg:left-[36px] lg:h-[77px] lg:w-[265px] lg:rounded-[20px] lg:px-[32px] lg:pt-[17px]">
-          <p className="m-0 font-sans text-[20px] leading-normal font-semibold tracking-[1.6px] whitespace-nowrap text-[#fbf8f0]">
-            01 / THE QUESTION
-          </p>
-        </div>
+    <section aria-label="The question" className="relative bg-paper pt-16 pb-24 text-[#141414] lg:pt-[84px] lg:pb-32">
+      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-[80px]">
+        <p className="m-0 font-sans text-[14px] leading-normal font-semibold">01 / The question</p>
 
-        <div className="relative rounded-[16px] border-2 border-[#141414] bg-[#fbf8f0] px-5 pt-10 pb-12 text-[#141414] sm:px-10 lg:rounded-[20px] lg:pt-[78px] lg:pr-[86px] lg:pb-[74px] lg:pl-[82px]">
+        <div className="mt-6 lg:mt-[29px]">
           <p className="m-0 text-[14px] leading-[22px] font-light">
             Armoury began as a Hack for Public Good project in 2023 with a simple but consequential question:
           </p>
@@ -38,7 +27,7 @@ export function QuestionSection() {
           <div className="mt-12 h-px bg-[#141414] lg:mt-[76px]" />
 
           <div className="mt-10 grid items-start gap-12 lg:mt-[41px] lg:grid-cols-[minmax(0,580px)_minmax(0,517px)] lg:justify-between lg:gap-8">
-            <div className="text-[18px] leading-[1.65]">
+            <div className="text-[16px] leading-[1.65]">
               <p className="m-0">
                 Every day, across Singapore, SCDF crews walk around their fire engines, ambulances and rescue
                 appliances and check that everything is there and working, from hose couplings to breathing sets. Until

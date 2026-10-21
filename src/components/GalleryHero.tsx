@@ -147,7 +147,7 @@ export function GalleryHero() {
           onPointerEnter={() => setHovering(true)}
           onPointerLeave={() => setHovering(false)}
         >
-          <div className="mb-4 flex items-center justify-between text-xs font-semibold tracking-[0.16em] uppercase">
+          <div className="mb-4 flex items-center justify-between text-[16px] font-semibold">
             <span style={{ color: 'color-mix(in oklab, var(--accent) 70%, white)' }}>Before Armoury</span>
             <span className="tabular text-white/55">
               {String(slide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
@@ -162,9 +162,9 @@ export function GalleryHero() {
               transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
               aria-live="polite"
             >
-              <p className="mb-1 text-[13px] text-white/60">{active.kicker}</p>
+              <p className="mb-1 text-[16px] text-white/60">{active.kicker}</p>
               <h2 className="font-serif text-[30px] leading-[1.05] sm:text-[34px]">{active.title}</h2>
-              <p className="mt-3 text-[15px] leading-relaxed text-white/80">{active.body}</p>
+              <p className="mt-3 text-[16px] leading-relaxed text-white/80">{active.body}</p>
             </motion.div>
           </AnimatePresence>
           <CarouselDots

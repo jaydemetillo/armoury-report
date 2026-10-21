@@ -25,10 +25,10 @@ export function FixGrid() {
         >
           <div className="flex items-baseline gap-2">
             <span className="font-serif text-[44px] leading-none text-[var(--accent)]">{f.stat}</span>
-            <span className="text-[13px] text-muted">{f.unit}</span>
+            <span className="text-[14px] text-muted">{f.unit}</span>
           </div>
-          <div className="mt-3 text-[15px] font-semibold">{f.title}</div>
-          <p className="m-0 mt-1 text-[15px] leading-snug text-ink-2">{f.body}</p>
+          <div className="mt-3 text-[16px] font-semibold">{f.title}</div>
+          <p className="m-0 mt-1 text-[16px] leading-snug text-ink-2">{f.body}</p>
         </motion.div>
       ))}
     </div>
@@ -67,15 +67,15 @@ export function EmtSlope() {
       source="Armoury Q3 2026 product review."
       className="mx-auto my-14 max-w-[520px] px-5"
     >
-      <svg viewBox="0 0 420 220" className="h-auto w-full overflow-visible" role="img" aria-label="EMT satisfaction rose from 26.7% to 82.5%">
-        <line x1="90" x2="90" y1="20" y2="200" stroke="var(--color-rule)" />
-        <line x1="330" x2="330" y1="20" y2="200" stroke="var(--color-rule)" />
-        <text x="90" y="218" textAnchor="middle" className="fill-muted text-[12px]">Before</text>
-        <text x="330" y="218" textAnchor="middle" className="fill-muted text-[12px]">After multi-photo</text>
+      <svg viewBox="0 0 330 220" className="h-auto w-full overflow-visible" role="img" aria-label="EMT satisfaction rose from 26.7% to 82.5%">
+        <line x1="65" x2="65" y1="20" y2="200" stroke="var(--color-rule)" />
+        <line x1="265" x2="265" y1="20" y2="200" stroke="var(--color-rule)" />
+        <text x="65" y="218" textAnchor="middle" className="fill-muted text-[16px]">Before</text>
+        <text x="265" y="218" textAnchor="middle" className="fill-muted text-[16px]">After multi-photo</text>
         <motion.line
-          x1="90"
+          x1="65"
           y1={y(26.7)}
-          x2="330"
+          x2="265"
           y2={y(82.5)}
           stroke="var(--accent)"
           strokeWidth="2.5"
@@ -84,10 +84,10 @@ export function EmtSlope() {
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.65, 0, 0.35, 1] }}
         />
-        <circle cx="90" cy={y(26.7)} r="6" fill="var(--color-muted)" stroke="var(--color-paper)" strokeWidth="2" />
-        <circle cx="330" cy={y(82.5)} r="6" fill="var(--accent)" stroke="var(--color-paper)" strokeWidth="2" />
-        <text x="76" y={y(26.7)} dy="0.32em" textAnchor="end" className="fill-ink text-[16px] font-semibold">26.7%</text>
-        <text x="344" y={y(82.5)} dy="0.32em" className="fill-ink text-[16px] font-semibold">82.5%</text>
+        <circle cx="65" cy={y(26.7)} r="6" fill="var(--color-muted)" stroke="var(--color-paper)" strokeWidth="2" />
+        <circle cx="265" cy={y(82.5)} r="6" fill="var(--accent)" stroke="var(--color-paper)" strokeWidth="2" />
+        <text x="51" y={y(26.7)} dy="0.32em" textAnchor="end" className="fill-ink text-[16px] font-semibold">26.7%</text>
+        <text x="279" y={y(82.5)} dy="0.32em" className="fill-ink text-[16px] font-semibold">82.5%</text>
       </svg>
     </ChartFrame>
   )
