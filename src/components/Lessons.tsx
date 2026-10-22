@@ -1,5 +1,6 @@
 import { SplitReveal } from '@/components/SplitReveal'
 import { useState } from 'react'
+import { CrossfadeLoopVideo } from '@/components/CrossfadeLoopVideo'
 import { AnimatePresence, motion } from 'motion/react'
 
 const worked = [
@@ -19,6 +20,9 @@ const hard = [
   ['Integration runs on the ecosystem’s clock', 'There was appetite to pipe Armoury data into SCDF’s Dataverse, but receiving-end constraints pushed it to around October 2026.'],
 ] as const
 
+/** The source clip cuts to solid white from 14.28s; the loop dissolves back to the start before that. */
+const LOOP_END = 14.2
+
 export function Lessons() {
   const [tab, setTab] = useState<'worked' | 'hard'>('worked')
   const [open, setOpen] = useState(0)
@@ -29,16 +33,9 @@ export function Lessons() {
     {/* Video hero: the section heading at headline size, white, over firefighters talking it through. A 20% black
         screen keeps the text readable, and the bottom fades into the page so it runs straight into the tabs below. */}
     <section aria-label="What worked, and what got hard" className="relative isolate mt-20 flex h-[min(80svh,760px)] min-h-[480px] items-center justify-center overflow-hidden bg-[#0d0d0d] px-5 text-center">
-      <video
-        aria-hidden
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        className="absolute inset-0 -z-10 h-full w-full object-cover motion-reduce:hidden"
-        src={`${import.meta.env.BASE_URL}video/firefighters-discuss.mp4`}
-      />
+      <div aria-hidden className="absolute inset-0 -z-10 motion-reduce:hidden">
+        <CrossfadeLoopVideo src={`${import.meta.env.BASE_URL}video/firefighters-discuss.mp4`} end={LOOP_END} fade={1.2} />
+      </div>
       <div aria-hidden className="absolute inset-0 -z-10 bg-black/20" />
       <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[35%] bg-gradient-to-b from-transparent to-paper" />
       <div className="pb-16">

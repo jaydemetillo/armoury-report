@@ -8,6 +8,7 @@ import { PhotoCarousel } from '@/components/PhotoCarousel'
 import { Headline } from '@/components/Headline'
 import { GalleryHero } from '@/components/GalleryHero'
 import { Hero3D } from '@/components/Hero3D'
+import { SplitReveal } from '@/components/SplitReveal'
 import { ChecklistPhoneOverlay } from '@/components/ChecklistPhone'
 import { Journey } from '@/components/Journey'
 import { CheckTimeChart, EmtSlope, FixGrid } from '@/components/LastMile'
@@ -334,7 +335,7 @@ export default function App() {
             ))}
           </div>
 
-          <section className="dark-band mt-24 bg-night py-24 text-[#e9e5dc]">
+          <section className="dark-band mt-24 bg-night pt-24 text-[#e9e5dc]">
             <div className="prose-body [&_p]:!text-[#d5d0c6]">
               <p className="kicker mb-6">The Armoury story, in one breath</p>
               <p className="font-serif !text-[28px] !leading-snug !text-white">Armoury started with paper.</p>
@@ -367,7 +368,27 @@ export default function App() {
                 Build with users. Prove adoption. Follow the data. Respect operational reality. Change the metric when
                 the product matures. And know when the right move isn’t another feature but a responsible handover.
               </p>
-              <p className="mt-14 text-center font-serif !text-[44px] !text-white italic">Every check matters.</p>
+            </div>
+
+            {/* Closing photo: the dark section dissolves into firefighters running a check, with the title over it. */}
+            <div className="relative isolate mt-16 flex h-[min(88svh,840px)] min-h-[520px] items-center justify-center overflow-hidden px-5 text-center">
+              <img
+                src={`${import.meta.env.BASE_URL}images/station-gas-detector-check.jpg`}
+                alt="Two firefighters at an open fire engine locker, one checking a gas detector while the other records it on a phone"
+                loading="lazy"
+                className="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_45%]"
+              />
+              <div aria-hidden className="absolute inset-0 -z-10 bg-black/40" />
+              <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-[55%] bg-gradient-to-b from-night via-night/70 to-transparent" />
+              <SplitReveal
+                as="h2"
+                variant="lines"
+                trigger="view"
+                className="display m-0 mx-auto max-w-[14ch] text-white"
+                style={{ fontSize: 'clamp(3rem, 9vw, 96px)' }}
+              >
+                Every check <em className="text-white">matters.</em>
+              </SplitReveal>
             </div>
           </section>
         </article>
