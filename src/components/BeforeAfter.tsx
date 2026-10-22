@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 
 const rows = [
   {
@@ -35,10 +35,23 @@ const rows = [
 ]
 
 export function BeforeAfter() {
-  const [after, setAfter] = useState(true)
+  // Starts on "Before". Once the section is on screen it switches itself to "After" after 3 seconds, unless the reader
+  // has already picked a side (then it stays where they put it).
+  const [after, setAfter] = useState(false)
+  const picked = useRef(false)
+  const ref = useRef<HTMLElement>(null)
+  const seen = useInView(ref, { once: true, amount: 0.4 })
+
+  useEffect(() => {
+    if (!seen) return
+    const id = window.setTimeout(() => {
+      if (!picked.current) setAfter(true)
+    }, 3000)
+    return () => window.clearTimeout(id)
+  }, [seen])
 
   return (
-    <section aria-label="Before and after Armoury" className="mx-auto my-16 max-w-[1000px] px-5">
+    <section ref={ref} aria-label="Before and after Armoury" className="mx-auto my-16 max-w-[1000px] px-5">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <h3 className="m-0 font-serif text-[34px] leading-tight font-normal">What changed for SCDF</h3>
         <div role="radiogroup" aria-label="Show" className="relative flex rounded-full bg-paper-2 p-1 text-[16px] font-medium">
@@ -49,7 +62,10 @@ export function BeforeAfter() {
                 key={label}
                 role="radio"
                 aria-checked={on}
-                onClick={() => setAfter(label === 'After')}
+                onClick={() => {
+                  picked.current = true
+                  setAfter(label === 'After')
+                }}
                 className="relative cursor-pointer rounded-full px-5 py-1.5"
               >
                 {on && (
@@ -69,7 +85,7 @@ export function BeforeAfter() {
       <div className="divide-y divide-rule border-y border-rule">
         {rows.map((r, i) => (
           <div key={r.area} className="grid grid-cols-1 gap-1 py-4 sm:grid-cols-[200px_1fr] sm:gap-6">
-            <div className="text-[16px] font-semibold text-muted">{r.area}</div>
+            <div className={`text-[16px] font-semibold transition-colors duration-500 ${after ? 'text-[var(--accent)]' : 'text-muted'}`}>{r.area}</div>
             <div className="relative min-h-[1.6em]">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.p

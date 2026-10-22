@@ -1,3 +1,4 @@
+import { SplitReveal } from '@/components/SplitReveal'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -24,9 +25,37 @@ export function Lessons() {
   const items = tab === 'worked' ? worked : hard
 
   return (
-    <section aria-label="Lessons" className="mx-auto my-20 max-w-[860px] px-5">
-      <p className="kicker mb-2">Lessons</p>
-      <h2 className="section-title m-0 mb-8">What worked, and what got hard.</h2>
+    <>
+    {/* Video hero: the section heading at headline size, white, over firefighters talking it through. A 20% black
+        screen keeps the text readable, and the bottom fades into the page so it runs straight into the tabs below. */}
+    <section aria-label="What worked, and what got hard" className="relative isolate mt-20 flex h-[min(80svh,760px)] min-h-[480px] items-center justify-center overflow-hidden bg-[#0d0d0d] px-5 text-center">
+      <video
+        aria-hidden
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="absolute inset-0 -z-10 h-full w-full object-cover motion-reduce:hidden"
+        src={`${import.meta.env.BASE_URL}video/firefighters-discuss.mp4`}
+      />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-black/20" />
+      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[35%] bg-gradient-to-b from-transparent to-paper" />
+      <div className="pb-16">
+        <p className="kicker mb-4 !text-white">Lessons</p>
+        <SplitReveal
+          as="h2"
+          variant="words"
+          trigger="view"
+          className="display m-0 mx-auto max-w-[14ch] text-white"
+          style={{ fontSize: 'clamp(3rem, 9vw, 96px)' }}
+        >
+          What worked, and what got hard.
+        </SplitReveal>
+      </div>
+    </section>
+
+    <section aria-label="Lessons" className="mx-auto mb-20 max-w-[860px] px-5 pt-14">
       <div role="tablist" className="mb-6 flex gap-6 border-b border-rule">
         {(
           [
@@ -80,5 +109,6 @@ export function Lessons() {
         ))}
       </ol>
     </section>
+    </>
   )
 }

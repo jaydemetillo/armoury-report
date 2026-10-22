@@ -15,15 +15,15 @@ export function Masthead() {
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30, mass: 0.3 })
 
   return (
-    <div className="sticky top-0 z-40 bg-[#004b93] font-sans font-bold text-white">
-      <div className="mx-auto flex h-12 max-w-[1240px] items-center justify-between gap-6 px-4 sm:px-8">
+    <div className="sticky top-0 z-40 bg-[#004b93] font-sans font-normal text-white">
+      <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-6 px-4 py-4 sm:px-8">
         <a href="#top" className="flex items-center no-underline">
           <img
             src={`${import.meta.env.BASE_URL}figma/armoury-logo.svg`}
             alt="Armoury"
             width={217}
             height={48}
-            className="block h-5 w-auto"
+            className="block h-[30px] w-auto"
           />
         </a>
         <nav aria-label="Chapters" className="hidden gap-5 text-[16px] lg:flex">

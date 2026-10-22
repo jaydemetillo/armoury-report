@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Counter } from '@/components/Counter'
 import { useActiveStep } from '@/hooks/use-active-step'
 import { useIsMobile } from '@/hooks/use-is-mobile'
-import { FIREHOUSE_BODY, FIREHOUSE_H, FIREHOUSE_OUTER, FIREHOUSE_RING, FIREHOUSE_W } from '@/components/firehouse-path'
+import { FIREHOUSE_BODY, FIREHOUSE_H, FIREHOUSE_RING, FIREHOUSE_W } from '@/components/firehouse-path'
 
 const VEHICLES = 350
 const STATIONS = 23
@@ -13,6 +13,24 @@ const W = 640
 const H = 480
 
 type Layout = { x: number; y: number }[]
+
+/**
+ * Paper step: each firehouse outline morphs into a sheet of paper. Both shapes are 13-point outlines in the
+ * firehouse's own coordinates (595 x 564) with the points in the same order, so motion can tween one into the other.
+ * The firehouse is a simplified silhouette of fire-truck-outline.svg (body, roof bar, arch); the sheet is portrait
+ * A-series (1 : 1.414) centred on the dots, with a folded top-right corner.
+ */
+const toPath = (pts: [number, number][]) => `M${pts.map(([x, y]) => `${x} ${y}`).join(' L')} Z`
+const HOUSE_SHAPE = toPath([
+  [38, 548], [38, 182], [24, 182], [24, 101], [155, 101], [200, 48], [297, 22],
+  [395, 48], [440, 101], [571, 101], [571, 182], [557, 182], [557, 548],
+])
+const PAPER_SHAPE = toPath([
+  [107, 582], [107, 400], [107, 200], [107, 46], [180, 46], [240, 46], [300, 46],
+  [360, 46], [430, 46], [487, 103], [487, 200], [487, 400], [487, 582],
+])
+/** The fold of the dog-eared corner. */
+const PAPER_FOLD = 'M430 46 L430 103 L487 103'
 
 function gridLayout(): Layout {
   const cols = 25
@@ -68,7 +86,7 @@ const steps = [
     stat: { value: 600, label: 'on-duty officers, every day' },
     text: (
       <>
-        At least <strong>600 frontline officers</strong> do those checks daily: hoses, water, tools, PPE. The checks
+        At least <strong>600 frontline officers</strong> do those checks daily, more than one for every vehicle: hoses, water, tools, PPE. The checks
         are there because emergency services need to know their equipment works when the call comes, not because of
         bureaucracy.
       </>
@@ -108,6 +126,8 @@ const steps = [
  * 23 stations → paper → 100% on Armoury), with its pinned graphic and steps.
  */
 export function CoolDataViz() {
+  // The step comes straight from scroll position (no timers), so what you see always matches where you are. Each step
+  // has a long scroll runway below, which is what gives its animation time to play out.
   const { active, setRef } = useActiveStep(steps.length)
   const isMobile = useIsMobile()
   const grid = useMemo(() => gridLayout(), [])
@@ -116,13 +136,17 @@ export function CoolDataViz() {
   const inStations = active === 2 || active === 3
   // The 18 extra dots only exist in the station view, parked in their slots the rest of the time.
   const layout = inStations ? stations : [...grid, ...stations.slice(VEHICLES)]
+  // Red wave: moving into the officers step, the dots turn red in a sweep from left to right (with a slight top-to-bottom
+  // lean), like someone walking the line checking each vehicle. Every other change keeps its quick, un-staggered fade.
+  const waveDelay = (i: number) => (active === 1 ? (i % 25) * 0.035 + Math.floor(i / 25) * 0.012 : 0)
   const opacityFor = (i: number) => (i >= VEHICLES && !inStations ? 0 : active === 3 ? 0.55 : 1)
   const fillFor = (i: number) => {
     switch (active) {
       case 0:
         return '#e9e5dc'
       case 1:
-        return i % 7 === 0 ? 'var(--accent)' : '#e9e5dc'
+        // 600 officers for ~350 vehicles: more than one for every vehicle, so every dot lights up.
+        return 'var(--accent)'
       case 2:
         return versionShades[(i % STATIONS) % versionShades.length]
       case 3:
@@ -137,8 +161,11 @@ export function CoolDataViz() {
   return (
     <section id="paper" className="dark-band relative bg-night text-[#e9e5dc]">
       <div className="mx-auto grid w-full max-w-[1720px] grid-cols-1 lg:grid-cols-[1fr_440px]">
-        <div className="sticky top-12 col-start-1 row-start-1 grid h-[calc(100svh-3rem)] grid-rows-[auto_minmax(0,1fr)_auto_auto] content-center gap-y-3 self-start px-5 py-6 lg:col-start-1 lg:col-end-3 lg:grid-cols-[300px_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)_auto_auto] lg:gap-x-8 lg:py-4">
-          <div className="min-h-[92px] lg:col-start-1 lg:row-start-1 lg:self-start lg:pt-4">
+        <div className="sticky top-[62px] col-start-1 row-start-1 grid h-[calc(100svh-62px)] grid-rows-[auto_minmax(0,1fr)_auto_auto] content-center gap-y-3 self-start px-5 py-6 lg:col-start-1 lg:col-end-3 lg:grid-cols-[360px_minmax(0,1fr)] lg:justify-center lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-10 lg:py-4">
+          {/* Left column on desktop: the number, then the paragraph 16px below it, both centred (vertically and horizontally) beside the dots. On phones the
+              wrapper disappears and the children fall into the page grid in their own order. */}
+          <div className="contents lg:col-start-1 lg:row-start-1 lg:flex lg:flex-col lg:items-center lg:gap-4 lg:self-center lg:text-center">
+          <div className="order-1 min-h-[92px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -154,7 +181,22 @@ export function CoolDataViz() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <svg viewBox={`0 0 ${W} ${H}`} className="h-full max-h-full min-h-0 w-full lg:col-start-2 lg:row-start-1" role="img" aria-label={step.stat.label}>
+          <div className="order-3 min-h-[3.25rem] lg:min-h-[12rem]">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={active}
+                className="m-0 text-[16px] leading-[1.55] text-[#e9e5dc]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.7, ease: 'easeInOut' }}
+              >
+                {step.text}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+          </div>
+          <svg viewBox={`0 0 ${W} ${H}`} className="order-2 h-full max-h-full min-h-0 w-full lg:col-start-2 lg:row-start-1 lg:aspect-[640/480] lg:w-auto lg:max-w-full lg:justify-self-center" role="img" aria-label={step.stat.label}>
             {active >= 2 && active <= 3 &&
               Array.from({ length: STATIONS }, (_, st) => {
                 const c = stationCentre(st)
@@ -170,9 +212,24 @@ export function CoolDataViz() {
                       animate={{ opacity: active === 2 ? 1 : 0 }}
                       transition={{ duration: 0.6 }}
                     />
-                    {/* ...then the same shape turns into a dotted line on paper. */}
+                    {/* ...then, on paper, the dotted outline morphs from the firehouse into a sheet of paper. */}
                     <motion.path
-                      d={FIREHOUSE_OUTER}
+                      fill="none"
+                      stroke="rgb(255 255 255 / 0.3)"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeDasharray="0.1 5"
+                      vectorEffect="non-scaling-stroke"
+                      initial={{ opacity: 0, d: HOUSE_SHAPE }}
+                      animate={{ opacity: active === 3 ? 1 : 0, d: active === 3 ? PAPER_SHAPE : HOUSE_SHAPE }}
+                      transition={{
+                        opacity: { duration: 0.4 },
+                        d: { duration: 0.9, ease: [0.65, 0, 0.35, 1], delay: active === 3 ? 0.25 : 0 },
+                      }}
+                    />
+                    <motion.path
+                      d={PAPER_FOLD}
                       fill="none"
                       stroke="rgb(255 255 255 / 0.3)"
                       strokeWidth={2}
@@ -181,7 +238,7 @@ export function CoolDataViz() {
                       vectorEffect="non-scaling-stroke"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: active === 3 ? 1 : 0 }}
-                      transition={{ duration: 0.6 }}
+                      transition={{ duration: 0.4, delay: active === 3 ? 1 : 0 }}
                     />
                   </g>
                 )
@@ -197,7 +254,7 @@ export function CoolDataViz() {
                     transform: `translate(${p.x}px, ${p.y}px)`,
                     fill: fillFor(i),
                     opacity: opacityFor(i),
-                    transition: 'transform 700ms cubic-bezier(0.23, 1, 0.32, 1), fill 400ms ease, opacity 400ms ease',
+                    transition: `transform 700ms cubic-bezier(0.23, 1, 0.32, 1), fill 500ms ease ${waveDelay(i)}s, opacity 400ms ease`,
                   }}
                 />
               ) : (
@@ -206,26 +263,18 @@ export function CoolDataViz() {
                   r={4.2}
                   initial={false}
                   animate={{ cx: p.x, cy: p.y, fill: fillFor(i), opacity: opacityFor(i) }}
-                  transition={{ type: 'spring', stiffness: 90, damping: 18, delay: (i % 25) * 0.008 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 90,
+                    damping: 18,
+                    delay: (i % 25) * 0.008,
+                    fill: { type: 'tween', duration: 0.5, ease: 'easeOut', delay: waveDelay(i) },
+                  }}
                 />
               ),
             )}
           </svg>
-          <div className="min-h-[3.25rem] lg:col-start-1 lg:col-end-3 lg:row-start-2">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={active}
-                className="m-0 text-[16px] leading-[1.55] text-[#e9e5dc]"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.9, ease: 'easeInOut' }}
-              >
-                {step.text}
-              </motion.p>
-            </AnimatePresence>
-          </div>
-          <p className="credit !text-[12px] !text-white/45 lg:col-start-1 lg:col-end-3 lg:row-start-3">
+          <p className="credit order-4 !text-[12px] !text-white/45 lg:col-start-1 lg:col-end-3 lg:row-start-2">
             Illustrative. One dot ≈ one vehicle or vessel. Source: Armoury problem framing and hackathon pitch, 2023;
             Q3 2026 product review.
           </p>
@@ -235,9 +284,9 @@ export function CoolDataViz() {
           <div className="h-[30vh]" />
           {steps.map((_, i) => (
             // Invisible scroll markers: they only drive the active step; the text fades in the frame.
-            <div key={i} ref={setRef(i)} className="scrolly-step" aria-hidden />
+            <div key={i} ref={setRef(i)} className="scrolly-step !min-h-[150svh]" aria-hidden />
           ))}
-          <div className="h-[40vh]" />
+          <div className="h-[70svh]" />
         </div>
       </div>
     </section>

@@ -22,7 +22,18 @@ export function Headline() {
   )
 
   return (
-    <header className="bg-[#0d0d0d] text-white">
+    <header className="relative isolate overflow-hidden bg-[#0d0d0d] text-white">
+      {/* Background video, dropped to 30% so the text on top stays readable. Decorative, so hidden from assistive tech. */}
+      <video
+        aria-hidden
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="absolute inset-0 -z-10 h-full w-full object-cover opacity-30 motion-reduce:hidden"
+        src={`${import.meta.env.BASE_URL}video/header-hero.mp4`}
+      />
       <div
         className={`mx-auto grid max-w-[1280px] items-center gap-12 px-5 pt-12 pb-16 sm:px-8 lg:gap-16 lg:pt-16 lg:pb-20 ${
           centred ? 'text-center' : 'lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]'

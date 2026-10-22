@@ -13,7 +13,9 @@ const fixes = [
 
 export function FixGrid() {
   return (
-    <div className="mx-auto my-14 grid max-w-[1100px] gap-px overflow-hidden rounded-[20px] border border-rule bg-rule px-0 sm:grid-cols-2 lg:grid-cols-3">
+    // Outer padding keeps at least 32px between the grid and the viewport edge at every width.
+    <div className="my-14 px-8">
+    <div className="mx-auto grid max-w-[1100px] gap-px overflow-hidden rounded-[20px] border border-rule bg-rule sm:grid-cols-2 lg:grid-cols-3">
       {fixes.map((f, i) => (
         <motion.div
           key={f.title}
@@ -31,6 +33,7 @@ export function FixGrid() {
           <p className="m-0 mt-1 text-[16px] leading-snug text-ink-2">{f.body}</p>
         </motion.div>
       ))}
+    </div>
     </div>
   )
 }

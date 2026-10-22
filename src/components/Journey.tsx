@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'motion/react'
+import { RevealLine } from '@/components/RevealLine'
 
 const chapters = [
   {
@@ -61,8 +62,11 @@ const WHEELS = [
   [214, 504, 27, 72],
 ]
 const TREAD_PERIOD = 18
-/** How far above the heading the road begins: exactly the gap (mt-32) up to the previous section, so it never crosses into it. */
-const ROAD_LEAD = 128
+/**
+ * How far above the heading the truck's track begins: the 128px gap (mt-32) plus 180px reaching up behind the black
+ * question section above, so the truck starts hidden there and slides out from under its bottom edge.
+ */
+const ROAD_LEAD = 128 + 180
 /** How much faster than the scroll the truck pulls away once the last chapter is reached. */
 const DRIVE_OFF = 2.6
 
@@ -124,7 +128,10 @@ export function Journey() {
   }, [update])
   useMotionValueEvent(scrollY, 'change', update)
 
-  const fade = 'linear-gradient(to bottom, transparent, #000 200px, #000 calc(100% - 200px), transparent)'
+  // Fully transparent behind the black section, then easing in over 200px below its bottom edge, so the truck fades into
+  // view as it slides out. It fades out again over the last 200px.
+  const edge = ROAD_LEAD - 128
+  const fade = `linear-gradient(to bottom, transparent ${edge}px, #000 ${edge + 200}px, #000 calc(100% - 200px), transparent)`
 
   return (
     <section aria-label="The journey at a glance" className="relative mx-auto mt-32 max-w-[1000px] px-5">
@@ -190,11 +197,13 @@ export function Journey() {
                 </div>
                 <div className="transition-opacity duration-500" style={{ opacity: i === active ? 1 : 0.5 }}>
                 <h3 className="m-0 mt-3 font-serif text-[36px] leading-[1.15] font-normal sm:text-[40px]">{c.title}</h3>
-                <div className="mt-6">
+                <div className="mt-6 border-l-2 border-muted/20 pl-4">
                   <div className="mb-1 text-[14px] font-semibold text-muted">What happened</div>
                   <p className="m-0 text-[16px] leading-relaxed text-ink-2">{c.happened}</p>
                 </div>
-                <div className="mt-5 border-l-2 pl-4" style={{ borderColor: 'var(--accent)' }}>
+                <div className="relative mt-5 pl-4">
+                  {/* Draws itself downward once the truck has reached this chapter. */}
+                  <RevealLine show={i <= active} />
                   <div className="mb-1 text-[14px] font-semibold text-muted">What changed</div>
                   <p className="m-0 text-[16px] leading-relaxed text-ink">{c.changed}</p>
                 </div>

@@ -211,3 +211,9 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Typing cursor in the 3D section's checklist phone. */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

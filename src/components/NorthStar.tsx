@@ -43,7 +43,7 @@ export function NorthStar() {
   return (
     <section className="relative bg-paper-2/70">
       <div className="mx-auto grid max-w-[1240px] grid-cols-1 lg:grid-cols-[1fr_420px]">
-        <div className="sticky top-12 col-start-1 row-start-1 flex h-[calc(100svh-3rem)] flex-col justify-center self-start px-5">
+        <div className="sticky top-[62px] col-start-1 row-start-1 flex h-[calc(100svh-62px)] flex-col justify-center self-start px-5">
           <div className="kicker mb-3">The North Star</div>
           <div className="relative min-h-[150px]">
             <AnimatePresence mode="wait">

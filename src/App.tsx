@@ -4,10 +4,11 @@ import { DialRoot } from 'dialkit'
 import 'dialkit/styles.css'
 import { DashboardIterations, LogsQuestions, SupplyDemand } from '@/components/AdminGap'
 import { BeforeAfter } from '@/components/BeforeAfter'
-import { Figure } from '@/components/Figure'
+import { PhotoCarousel } from '@/components/PhotoCarousel'
 import { Headline } from '@/components/Headline'
 import { GalleryHero } from '@/components/GalleryHero'
 import { Hero3D } from '@/components/Hero3D'
+import { ChecklistPhoneOverlay } from '@/components/ChecklistPhone'
 import { Journey } from '@/components/Journey'
 import { CheckTimeChart, EmtSlope, FixGrid } from '@/components/LastMile'
 import { Lessons } from '@/components/Lessons'
@@ -92,11 +93,13 @@ export default function App() {
               </p>
             </Chapter>
 
-            <Figure
-              src={`${import.meta.env.BASE_URL}images/checklist.jpg`}
-              alt="A gloved hand holding a phone showing a checklist, with a fire engine behind"
+            <PhotoCarousel
               caption="Armoury replaced station binders with a check flow built for gloves, water and urgency."
-              credit="Illustration: placeholder for SCDF photography"
+              photos={[
+                { src: `${import.meta.env.BASE_URL}images/station-phone-check.jpg`, alt: 'A firefighter ticking through an equipment checklist on a phone at an open fire engine locker' },
+                { src: `${import.meta.env.BASE_URL}images/station-engine-lockers.jpg`, alt: 'Two firefighters checking equipment in the open side lockers of a Fire and Rescue Response engine' },
+                { src: `${import.meta.env.BASE_URL}images/station-hose-reels.jpg`, alt: 'Hose reels and nozzles stored in a fire engine locker' },
+              ]}
             />
 
             <Prose>
@@ -152,7 +155,7 @@ export default function App() {
           <CheckTimeChart />
 
           <PullQuote size="xl" cite="Q3 2026 product review">
-            Armoury was a project. Armoury is a maintained, stable platform.
+            Armoury is a maintained, stable platform.
           </PullQuote>
 
           <Chapter id="admin-gap" number="04" title="Success lit a spark at HQ">
@@ -183,8 +186,30 @@ export default function App() {
           </Prose>
 
           {/* Scroll-driven 3D model. Move this one line to place it anywhere else on the page. */}
-          <Hero3D className="mt-16" />
+          <Hero3D
+            className="mt-16"
+            // The checklist phone shrinks the canvas to the free space beside/above it (see ChecklistPhone), so the
+            // truck is simply centred in its own canvas: no framing offsets, one framing profile, and no lift for
+            // the module's story cards (they are unused here).
+            config={{
+              CAMERA_SETTINGS: {
+                framing: {
+                  compactBelowWidth: 0,
+                  compactBelowHeight: 0,
+                  desktop: { offset: [0, 0], zoom: 1 },
+                  mobile: { offset: [0, 0], zoom: 1 },
+                },
+                cardClearance: { belowHeight: 0 },
+                // The canvas is roughly square once the phone takes its share, so ease the module's portrait
+                // pull-back: keep a small margin round the truck instead of the default 10%.
+                narrowCrop: { minScale: 0.98 },
+              },
+            }}
+            overlay={(progress) => <ChecklistPhoneOverlay progress={progress} />}
+          />
 
+          {/* White band: from the photo hero through the dashboards, Logs questions and ILMS section. It ends flat, with no fade. */}
+          <div className="relative bg-white pb-20">
           <DashboardIterations />
 
           <Prose>
@@ -210,8 +235,8 @@ export default function App() {
           </Prose>
 
           <SupplyDemand />
+          </div>
 
-          <div className="h-16" />
           <NorthStar />
 
           <Chapter id="last-mile" number="05" title="The last mile before maintenance">
@@ -308,11 +333,6 @@ export default function App() {
               </motion.div>
             ))}
           </div>
-          <Prose>
-            <p className="mt-10 text-[14px]">
-              A strong partner relationship isn’t enough on its own. The next problem still has to be proven.
-            </p>
-          </Prose>
 
           <section className="dark-band mt-24 bg-night py-24 text-[#e9e5dc]">
             <div className="prose-body [&_p]:!text-[#d5d0c6]">
