@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Counter } from '@/components/Counter'
 import { useActiveStep } from '@/hooks/use-active-step'
 import { useIsMobile } from '@/hooks/use-is-mobile'
@@ -129,6 +129,7 @@ export function CoolDataViz() {
   // The step comes straight from scroll position (no timers), so what you see always matches where you are. Each step
   // has a long scroll runway below, which is what gives its animation time to play out.
   const { active, setRef } = useActiveStep(steps.length)
+  const reduce = useReducedMotion()
   const isMobile = useIsMobile()
   const grid = useMemo(() => gridLayout(), [])
   const stations = useMemo(() => stationLayout(), [])
@@ -161,7 +162,7 @@ export function CoolDataViz() {
   return (
     <section id="paper" className="dark-band relative bg-night text-[#e9e5dc]">
       <div className="mx-auto grid w-full max-w-[1720px] grid-cols-1 lg:grid-cols-[1fr_440px]">
-        <div className="sticky top-[62px] col-start-1 row-start-1 grid h-[calc(100svh-62px)] grid-rows-[auto_minmax(0,1fr)_auto_auto] content-center gap-y-3 self-start px-5 py-6 lg:col-start-1 lg:col-end-3 lg:grid-cols-[360px_minmax(0,1fr)] lg:justify-center lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-10 lg:py-4">
+        <div className="sticky top-[62px] col-start-1 row-start-1 grid h-[calc(100svh-62px)] grid-rows-[auto_minmax(0,1fr)_auto_auto_auto] content-center gap-y-3 self-start px-5 py-6 lg:col-start-1 lg:col-end-3 lg:grid-cols-[360px_minmax(0,1fr)] lg:justify-center lg:grid-rows-[minmax(0,1fr)_auto] lg:gap-x-10 lg:py-4">
           {/* Left column on desktop: the number, then the paragraph 16px below it, both centred (vertically and horizontally) beside the dots. On phones the
               wrapper disappears and the children fall into the page grid in their own order. */}
           <div className="contents lg:col-start-1 lg:row-start-1 lg:flex lg:flex-col lg:items-center lg:gap-4 lg:self-center lg:text-center">
@@ -194,6 +195,27 @@ export function CoolDataViz() {
                 {step.text}
               </motion.p>
             </AnimatePresence>
+          </div>
+          {/* Scroll cue: readers told us they didn't realise the animation moves on as they scroll. Sits under the
+              paragraph (left column on desktop, between paragraph and credit on phones) and stays on every step,
+              including the last, so readers know they can scroll on out of the frame. */}
+          <div className="order-4 my-1 flex items-center justify-center gap-2 text-[14px] text-white/60 lg:my-0">
+            <motion.svg
+              aria-hidden
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              animate={reduce ? undefined : { y: [0, 3, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <path d="M8 2.5v10M3.5 8.5 8 13l4.5-4.5" />
+            </motion.svg>
+            Please keep scrolling
           </div>
           </div>
           <svg viewBox={`0 0 ${W} ${H}`} className="order-2 h-full max-h-full min-h-0 w-full lg:col-start-2 lg:row-start-1 lg:aspect-[640/480] lg:w-auto lg:max-w-full lg:justify-self-center" role="img" aria-label={step.stat.label}>
@@ -274,7 +296,7 @@ export function CoolDataViz() {
               ),
             )}
           </svg>
-          <p className="credit order-4 !text-[12px] !text-white/45 lg:col-start-1 lg:col-end-3 lg:row-start-2">
+          <p className="credit order-5 !text-[12px] !text-white/45 lg:col-start-1 lg:col-end-3 lg:row-start-2">
             Illustrative. One dot ≈ one vehicle or vessel. Source: Armoury problem framing and hackathon pitch, 2023;
             Q3 2026 product review.
           </p>

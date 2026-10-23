@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { motion, useInView } from 'motion/react'
 
 export interface Bar {
@@ -8,6 +8,8 @@ export interface Bar {
   note?: string
   /** Render in the accent colour; others are neutral. */
   emphasis?: boolean
+  /** Optional opacity for this bar only, to lighten it (default 1). */
+  opacity?: number
 }
 
 interface BarChartProps {
@@ -26,20 +28,22 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
 
   if (orientation === 'horizontal') {
     return (
-      <div ref={ref} role="img" aria-label={ariaLabel} className="flex flex-col gap-4">
+      // One shared grid: the label column is only as wide as the longest label, so every bar starts at the same x.
+      <div ref={ref} role="img" aria-label={ariaLabel} className="grid grid-cols-[auto_1fr] items-center gap-4">
         {data.map((d, i) => (
-          <div key={d.label} className="grid grid-cols-[minmax(90px,150px)_1fr] items-center gap-4">
-            <div className="text-[16px] leading-tight text-ink-2">{d.label}</div>
-            <div className="relative h-9" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)}>
+          <Fragment key={d.label}>
+            <div className="max-w-[150px] text-[16px] leading-tight text-ink-2">{d.label}</div>
+            {/* Right margin reserves room for the value label so it never wraps or overflows. */}
+            <div className="relative mr-[80px] h-9" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)}>
               <motion.div
                 className="absolute inset-y-1 left-0 rounded-r-[4px]"
-                style={{ background: d.emphasis ? 'var(--accent)' : 'var(--color-muted)', opacity: hover === null || hover === i ? 1 : 0.5 }}
+                style={{ background: d.emphasis ? 'var(--accent)' : 'var(--color-muted)', opacity: (d.opacity ?? 1) * (hover === null || hover === i ? 1 : 0.5) }}
                 initial={{ width: 0 }}
                 animate={{ width: inView ? `${(d.value / max) * 100}%` : 0 }}
                 transition={{ duration: 1.1, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
               />
               <motion.span
-                className="absolute top-1/2 -translate-y-1/2 pl-2 text-[16px] font-semibold text-ink tabular"
+                className="absolute top-1/2 -translate-y-1/2 whitespace-nowrap pl-2 text-[16px] font-semibold text-ink tabular"
                 initial={{ left: '0%', opacity: 0 }}
                 animate={inView ? { left: `${(d.value / max) * 100}%`, opacity: 1 } : {}}
                 transition={{ duration: 1.1, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
@@ -52,7 +56,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
                 </div>
               )}
             </div>
-          </div>
+          </Fragment>
         ))}
       </div>
     )
@@ -81,7 +85,7 @@ export function BarChart({ data, max, format, ariaLabel, orientation = 'vertical
               style={{
                 height: `${(d.value / max) * 82}%`,
                 background: d.emphasis ? 'var(--accent)' : 'var(--color-muted)',
-                opacity: hover === null || hover === i ? 1 : 0.55,
+                opacity: (d.opacity ?? 1) * (hover === null || hover === i ? 1 : 0.55),
               }}
               initial={{ scaleY: 0 }}
               animate={{ scaleY: inView ? 1 : 0 }}

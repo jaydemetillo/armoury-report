@@ -53,7 +53,7 @@ function PaperCard({ card, index }: { card: CardData; index: number }) {
     >
       <div
         aria-hidden
-        className="absolute inset-0 rounded-[4px] bg-[#fbf8f0] bg-cover bg-center"
+        className="absolute inset-0 rounded-[4px] bg-[#fbf8f0] bg-cover bg-center shadow-[0_14px_36px_-8px_rgb(0_0_0/0.28),0_4px_14px_rgb(0_0_0/0.1)]"
         style={{ backgroundImage: `url(${base}figma/question-paper.png)` }}
       >
         <img src={`${base}figma/paperclip.svg`} alt="" width={24} height={64} className="absolute top-[-18px] right-[66px] block" />
@@ -73,8 +73,9 @@ function PaperCard({ card, index }: { card: CardData; index: number }) {
 export function ProblemSection({ children }: { children: ReactNode }) {
   return (
     <section
+      id="problem"
       aria-label="The problem"
-      className="relative bg-[#004b93] pt-16 pb-24 text-[#f3eee2] lg:pt-[84px] lg:pb-32"
+      className="relative scroll-mt-[62px] bg-[#004b93] pt-16 pb-24 text-[#f3eee2] lg:pt-[84px] lg:pb-32"
     >
       {/* The blueprint grid sits behind the heading and cards, then fades out into plain blue before chapter 01 begins. */}
       <div className="relative">
@@ -91,7 +92,7 @@ export function ProblemSection({ children }: { children: ReactNode }) {
         />
       <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-[80px]">
         <p className="m-0 font-sans text-[14px] leading-normal font-semibold">
-          02 / The problem
+          The problem
         </p>
         <h2 className="m-0 mt-6 font-serif text-[clamp(3.5rem,9vw,110px)] leading-[0.95] font-normal tracking-[-0.01em] lg:mt-[29px] lg:leading-[104px]">
           Paper won’t cut it

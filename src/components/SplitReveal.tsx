@@ -24,9 +24,20 @@ interface SplitRevealProps {
 const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)'
 
 function split(el: HTMLElement, variant: Variant): TextSplit {
-  return variant === 'lines'
-    ? splitText(el, { type: ['lines'], mask: { lines: '.18em' } })
-    : splitText(el, { type: ['words'], mask: { lines: '.18em' } })
+  const s =
+    variant === 'lines'
+      ? splitText(el, { type: ['lines'], mask: { lines: '.18em' } })
+      : splitText(el, { type: ['words'], mask: { lines: '.18em' } })
+  // kugiri wraps each space between words in its own fixed-width inline-block. It looks right, but browsers drop
+  // whitespace inside inline-blocks from copied text and the accessibility tree ("Thisproductdoes"). Turning those
+  // spacers back into plain inline text keeps the same gap while keeping real spaces.
+  for (const span of el.querySelectorAll<HTMLElement>('span:not([data-word]):not([data-char])')) {
+    if (span.childElementCount === 0 && span.textContent?.trim() === '') {
+      span.style.display = 'inline'
+      span.style.removeProperty('inline-size')
+    }
+  }
+  return s
 }
 
 /** `lite` (phones) drops the per-word blur, which is costly to animate on mobile GPUs. */

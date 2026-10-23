@@ -25,7 +25,7 @@ const metrics: Metric[] = [
         ariaLabel="Total submissions per quarter: 108,525, 110,658, 113,919"
         max={120000}
         format={int}
-        data={[108525, 110658, 113919].map((value, i) => ({ label: quarters[i], value, emphasis: i === 2 }))}
+        data={[108525, 110658, 113919].map((value, i) => ({ label: quarters[i], value, emphasis: i === 2, opacity: i === 0 ? 0.4 : undefined }))}
       />
     ),
   },
@@ -59,6 +59,7 @@ const metrics: Metric[] = [
           label: quarters[i],
           value,
           emphasis: i === 2,
+          opacity: i === 0 ? 0.4 : undefined,
           note: i === 2 ? 'PPE onboarding across all 23 stations' : undefined,
         }))}
       />
@@ -75,7 +76,7 @@ const metrics: Metric[] = [
         ariaLabel="Median check time: Q4 2025 41 minutes, Q1 2026 41 minutes, Q2 2026 38.5 minutes"
         max={45}
         format={(v) => `${v} min`}
-        data={[41, 41, 38.5].map((value, i) => ({ label: quarters[i], value, emphasis: i === 2 }))}
+        data={[41, 41, 38.5].map((value, i) => ({ label: quarters[i], value, emphasis: i === 2, opacity: i === 0 ? 0.4 : undefined }))}
       />
     ),
   },

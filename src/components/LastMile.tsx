@@ -52,7 +52,7 @@ export function CheckTimeChart() {
         format={(v) => (v === 60 ? '60+' : String(v))}
         data={[
           { label: 'Paper', value: 60, note: 'Product review baseline' },
-          { label: 'Armoury, before UI V2', value: 41, note: 'Q4 2025 – Q1 2026' },
+          { label: 'Armoury, before UI V2', value: 41, opacity: 0.4, note: 'Q4 2025 – Q1 2026' },
           { label: 'Armoury, UI V2', value: 38.5, emphasis: true, note: '6.1% faster than before' },
         ]}
       />

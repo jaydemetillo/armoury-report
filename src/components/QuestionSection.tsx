@@ -23,7 +23,7 @@ function ParallaxPhoto() {
 }
 
 /**
- * "01 / The question": the founding question and the opening copy. Laid out like the other numbered sections
+ * "The question": the founding question and the opening copy. Laid out like the other numbered sections
  * (label, heading, content on the page background) on black with white text and rules (no panel, tab or paper texture). It sits above the journey's fire truck, which slides out from beneath its bottom edge. The right column holds a square
  * parallax photo.
  */
@@ -31,7 +31,7 @@ export function QuestionSection() {
   return (
     <section aria-label="The question" className="relative z-10 bg-black pt-16 pb-24 text-white lg:pt-[84px] lg:pb-32">
       <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-[80px]">
-        <p className="m-0 font-sans text-[14px] leading-normal font-semibold text-white">01 / The question</p>
+        <p className="m-0 font-sans text-[14px] leading-normal font-semibold text-white">The question</p>
 
         <div className="mt-6 lg:mt-[29px]">
           <p className="m-0 text-[14px] leading-[22px] font-light">

@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { motion } from 'motion/react'
+import { useRef, type ReactNode } from 'react'
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { DialRoot } from 'dialkit'
 import 'dialkit/styles.css'
 import { DashboardIterations, LogsQuestions, SupplyDemand } from '@/components/AdminGap'
@@ -14,6 +14,7 @@ import { Journey } from '@/components/Journey'
 import { CheckTimeChart, EmtSlope, FixGrid } from '@/components/LastMile'
 import { Lessons } from '@/components/Lessons'
 import { Masthead } from '@/components/Masthead'
+import { ChapterRail } from '@/components/ChapterRail'
 import { NorthStar } from '@/components/NorthStar'
 import { NumbersExplorer } from '@/components/NumbersExplorer'
 import { ProblemSection } from '@/components/ProblemSection'
@@ -48,10 +49,46 @@ function Chapter({ id, number, title, children }: { id?: string; number: string;
 // Photo gallery hero (image carousel) is hidden for now. Set to true to bring it back.
 const SHOW_GALLERY_HERO = false
 
+/** Closing photo: the dark section dissolves into firefighters running a check, with the title over it. The photo
+ *  drifts slower than the page (same parallax as the "Show the decision" hero). */
+function ClosingPhoto() {
+  const ref = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const photoY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%'])
+  return (
+    <div
+      ref={ref}
+      id="closing"
+      className="relative isolate mt-16 flex h-[min(88svh,840px)] min-h-[520px] items-center justify-center overflow-hidden px-5 text-center"
+    >
+      <motion.img
+        src={`${import.meta.env.BASE_URL}images/station-gas-detector-check.jpg`}
+        alt="Two firefighters at an open fire engine locker, one checking a gas detector while the other records it on a phone"
+        loading="lazy"
+        className="absolute inset-x-0 top-[-9%] -z-10 h-[118%] w-full object-cover object-[50%_45%] will-change-transform"
+        style={reduce ? undefined : { y: photoY }}
+      />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-black/40" />
+      <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-[55%] bg-gradient-to-b from-night via-night/70 to-transparent" />
+      <SplitReveal
+        as="h2"
+        variant="lines"
+        trigger="view"
+        className="display m-0 mx-auto max-w-[14ch] text-white"
+        style={{ fontSize: 'clamp(3rem, 9vw, 96px)' }}
+      >
+        Every check <em className="text-white">matters.</em>
+      </SplitReveal>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <div id="top">
       <Masthead />
+      <ChapterRail />
       <main>
         <Headline />
         {SHOW_GALLERY_HERO && <GalleryHero />}
@@ -105,7 +142,7 @@ export default function App() {
 
             <Prose>
               <p>Even at pitch stage, the ambition went beyond digitising a form. The pitch promised six things:</p>
-              <ol className="mb-8 grid list-none gap-x-8 gap-y-3 p-0 text-[16px] sm:grid-cols-2">
+              <ul className="mb-8 grid list-none gap-x-8 gap-y-3 p-0 text-[16px] sm:grid-cols-2">
                 {[
                   'Load vehicle data into a customisable CMS',
                   'See the live status of every vehicle in the fleet',
@@ -113,13 +150,12 @@ export default function App() {
                   'Let several checkers work on one check at once',
                   'Submit completed checks',
                   'Read operational insights on a dashboard',
-                ].map((item, i) => (
-                  <li key={item} className="flex gap-3 border-t border-rule pt-3 text-ink-2">
-                    <span className="font-serif text-[20px] leading-none text-[var(--accent)]">{i + 1}</span>
+                ].map((item) => (
+                  <li key={item} className="border-t border-rule pt-3 text-ink-2">
                     {item}
                   </li>
                 ))}
-              </ol>
+              </ul>
               <p>
                 The pitch even imagined Armoury spreading to SPF, SAF, RSAF and the Navy, and beyond vehicles to welfare
                 checks, building and environmental inspections. That instinct to expand would later become both an
@@ -321,8 +357,7 @@ export default function App() {
             ].map(([k, t, b], i) => (
               <motion.div
                 key={k}
-                className="border-t-2 pt-4"
-                style={{ borderColor: i === 0 ? 'var(--accent)' : 'var(--color-ink)' }}
+                className="border-t border-rule pt-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -337,7 +372,7 @@ export default function App() {
 
           <section className="dark-band mt-24 bg-night pt-24 text-[#e9e5dc]">
             <div className="prose-body [&_p]:!text-[#d5d0c6]">
-              <p className="kicker mb-6">The Armoury story, in one breath</p>
+              <p id="conclusion" className="kicker mb-6 scroll-mt-24">The Armoury story, in one breath</p>
               <p className="font-serif !text-[28px] !leading-snug !text-white">Armoury started with paper.</p>
               <p>
                 Actual paper: checklists printed, filled, filed and stored in fire stations. Paper that could prove a
@@ -370,26 +405,7 @@ export default function App() {
               </p>
             </div>
 
-            {/* Closing photo: the dark section dissolves into firefighters running a check, with the title over it. */}
-            <div className="relative isolate mt-16 flex h-[min(88svh,840px)] min-h-[520px] items-center justify-center overflow-hidden px-5 text-center">
-              <img
-                src={`${import.meta.env.BASE_URL}images/station-gas-detector-check.jpg`}
-                alt="Two firefighters at an open fire engine locker, one checking a gas detector while the other records it on a phone"
-                loading="lazy"
-                className="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_45%]"
-              />
-              <div aria-hidden className="absolute inset-0 -z-10 bg-black/40" />
-              <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-[55%] bg-gradient-to-b from-night via-night/70 to-transparent" />
-              <SplitReveal
-                as="h2"
-                variant="lines"
-                trigger="view"
-                className="display m-0 mx-auto max-w-[14ch] text-white"
-                style={{ fontSize: 'clamp(3rem, 9vw, 96px)' }}
-              >
-                Every check <em className="text-white">matters.</em>
-              </SplitReveal>
-            </div>
+            <ClosingPhoto />
           </section>
         </article>
       </main>

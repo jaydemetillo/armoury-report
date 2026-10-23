@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { animate, motion, useMotionValue, useTransform, type MotionValue } from 'motion/react'
+import { animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from 'motion/react'
 
 /**
  * The Armoury checklist on a phone, built from the Figma frame "test" (node 11:3356), pinned beside the 3D truck.
@@ -8,8 +8,12 @@ import { animate, motion, useMotionValue, useTransform, type MotionValue } from 
  * plays backwards when the reader scrolls up:
  *   right side  -> Q1 "Have you checked the lines?"        tapped YES (green)
  *   rear        -> list scrolls, Q2 "Is the fuel level…"   tapped YES (green)
- *   left side   -> list scrolls, Q3 "Did you check the battery health?" tapped NO (grey),
- *                  the energy field opens with a cursor, "600" is typed, then NO turns red.
+ *   left side   -> list scrolls, Q3 "Is the battery fully charged?" tapped NO (grey),
+ *                  the energy field opens with a cursor, "60%" is typed, then NO turns red.
+ *
+ * Readers can also tap instead of scrolling. YES on Q1 or Q2 scrolls the page to the next rotation (so taps and scroll
+ * stay one timeline and still reverse). NO on Q1 or Q2 does nothing. NO on Q3 plays the energy-field typing on the
+ * spot without moving the truck.
  */
 
 /** Beat thresholds on the truck's damped progress (see STEPS / CAMERA_KEYFRAMES in hero3d/config.js). */
@@ -22,6 +26,18 @@ const T = {
   type1: 0.74,
   type2: 0.77,
   type3: 0.8,
+}
+
+/** Where a YES tap scrolls to: just into the next rotation, with the next question on screen and still unanswered. */
+const TAP_TARGET = { q1: 0.36, q2: 0.64 }
+
+/** Scroll the page so the 3D module's progress lands on `p` (its ScrollTrigger maps 'top top' → 'bottom bottom'). */
+function scrollToProgress(from: Element | null, p: number, smooth: boolean) {
+  const root = from?.closest('.h3d')
+  if (!root) return
+  const top = root.getBoundingClientRect().top + window.scrollY
+  const scrollable = (root as HTMLElement).offsetHeight - window.innerHeight
+  window.scrollTo({ top: top + scrollable * p, behavior: smooth ? 'smooth' : 'auto' })
 }
 
 // Figma variables (color/...) where the frame defines them; answer colours from the app screenshots.
@@ -49,13 +65,16 @@ interface PhoneState {
   typed: string
 }
 
+/** The energy amount typed into Q3's field, one keystroke at a time; reaching it completes the checklist. */
+const FULL = '60%'
+
 function derive(p: number): PhoneState {
   return {
     q: p >= T.toQ3 ? 2 : p >= T.toQ2 ? 1 : 0,
     q1: p >= T.q1Yes,
     q2: p >= T.q2Yes,
     q3: p >= T.q3No,
-    typed: p >= T.type3 ? '600' : p >= T.type2 ? '60' : p >= T.type1 ? '6' : '',
+    typed: p >= T.type3 ? FULL : p >= T.type2 ? '60' : p >= T.type1 ? '6' : '',
   }
 }
 
@@ -98,27 +117,48 @@ function Ripple({ playKey, color }: { playKey: number; color: string }) {
   )
 }
 
-function YesNo({ answer, noColor, tapKey }: { answer: 'yes' | 'no' | null; noColor: string; tapKey: number }) {
+function YesNo({
+  answer,
+  noColor,
+  tapKey,
+  question,
+  onTap,
+}: {
+  answer: 'yes' | 'no' | null
+  noColor: string
+  tapKey: number
+  question: string
+  /** Set only while this question is the live one and unanswered; otherwise the buttons are inert. */
+  onTap?: (side: 'yes' | 'no') => void
+}) {
   const seg = (side: 'yes' | 'no') => {
     const on = answer === side
     const bg = on ? (side === 'yes' ? COLORS.yes : noColor) : 'transparent'
+    const live = !!onTap
     return (
-      <span
-        className="relative flex h-[34.44px] flex-1 items-center justify-center gap-[4px] overflow-hidden rounded-[6.15px] text-[8.61px] font-bold tracking-[0.17px] uppercase transition-[background-color,color] duration-500"
-        style={{ background: bg, color: on ? '#fff' : COLORS.idle }}
+      <button
+        type="button"
+        disabled={!live}
+        aria-pressed={on}
+        aria-label={`${side === 'yes' ? 'Yes' : 'No'}: ${question}`}
+        onClick={() => onTap?.(side)}
+        className={`relative flex h-[34.44px] flex-1 items-center justify-center gap-[4px] overflow-hidden rounded-[6.15px] border-0 p-0 text-[8.61px] font-bold tracking-[0.17px] uppercase transition-[background-color,color] duration-500 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#1361f0] disabled:cursor-default ${
+          live ? 'cursor-pointer hover:bg-white/70' : ''
+        }`}
+        style={{ background: on ? bg : undefined, color: on ? '#fff' : COLORS.idle }}
       >
         {side === 'yes' ? <Check className="h-[8px] w-[8px]" /> : <Cross className="h-[8px] w-[8px]" />}
         {side === 'yes' ? 'Yes' : 'No'}
         {on && <Ripple playKey={tapKey} color="rgb(255 255 255 / 0.45)" />}
-      </span>
+      </button>
     )
   }
   return (
     <div
       className="flex h-[39.36px] gap-[2.46px] rounded-[4.92px] border-[0.615px] p-[2.46px]"
       style={{ background: COLORS.segBg, borderColor: COLORS.segBorder }}
-      role="img"
-      aria-label={answer ? `Answered ${answer}` : 'Not answered yet'}
+      role="group"
+      aria-label={question}
     >
       {seg('yes')}
       {seg('no')}
@@ -143,7 +183,7 @@ function Card({ q, children }: { q: string; children: React.ReactNode }) {
 /** "What's the energy amount?" field (from the app screenshots, sized to the Figma card): blue and focused with a
  * blinking cursor while typing, settled to the grey divider once the amount is in. */
 function EnergyField({ typed }: { typed: string }) {
-  const done = typed === '600'
+  const done = typed === FULL
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
@@ -185,7 +225,7 @@ const SCREEN_H = 330.86
 const PAD_X = 9.84 * KX
 
 /** Checklist completion shown in the header: each YES moves it closer to 100%, the entered amount finishes it. */
-const percentFor = (st: PhoneState) => (st.typed === '600' ? 100 : st.q2 ? 96 : st.q1 ? 93 : 90)
+const percentFor = (st: PhoneState) => (st.typed === FULL ? 100 : st.q2 ? 96 : st.q1 ? 93 : 90)
 
 /** The header's percentage: the bar and the number glide to each new value. */
 function Progress({ value }: { value: number }) {
@@ -214,7 +254,25 @@ function Progress({ value }: { value: number }) {
  * while the frame itself stays where it is.
  */
 export function ChecklistPhone({ progress, visibleH = SCREEN_H }: { progress: MotionValue<number>; visibleH?: number }) {
-  const [s, setS] = useState<PhoneState>(() => derive(progress.get()))
+  const [scrolled, setS] = useState<PhoneState>(() => derive(progress.get()))
+  const reduce = useReducedMotion()
+  const self = useRef<HTMLDivElement>(null)
+  // A NO tap on Q3 plays the typing locally (the truck stays put). It only counts while Q3 is on screen.
+  const [manualTyped, setManualTyped] = useState<string | null>(null)
+  const typingTimers = useRef<number[]>([])
+  const onQ3 = scrolled.q === 2
+  useEffect(() => {
+    if (onQ3) return
+    typingTimers.current.forEach(clearTimeout)
+    typingTimers.current = []
+    setManualTyped(null)
+  }, [onQ3])
+  useEffect(() => () => typingTimers.current.forEach(clearTimeout), [])
+  // Whichever is further along wins: the scroll timeline or the tapped one.
+  const s: PhoneState =
+    manualTyped === null
+      ? scrolled
+      : { ...scrolled, q3: true, typed: manualTyped.length >= scrolled.typed.length ? manualTyped : scrolled.typed }
   // Tap ripples: bump a key only when an answer goes from unanswered to answered while scrolling forward.
   const [taps, setTaps] = useState({ q1: 0, q2: 0, q3: 0 })
   const prev = useRef(s)
@@ -261,15 +319,25 @@ export function ChecklistPhone({ progress, visibleH = SCREEN_H }: { progress: Mo
     return () => ro.disconnect()
   }, [s.q, visibleH])
 
-  const noColor = s.typed === '600' ? COLORS.noRed : COLORS.noGrey
+  const noColor = s.typed === FULL ? COLORS.noRed : COLORS.noGrey
+
+  const tapQ1 = (side: 'yes' | 'no') => side === 'yes' && scrollToProgress(self.current, TAP_TARGET.q1, !reduce)
+  const tapQ2 = (side: 'yes' | 'no') => side === 'yes' && scrollToProgress(self.current, TAP_TARGET.q2, !reduce)
+  const tapQ3 = (side: 'yes' | 'no') => {
+    if (side !== 'no') return
+    setTaps((t) => ({ ...t, q3: t.q3 + 1 }))
+    setManualTyped('')
+    const steps = ['6', '60', FULL]
+    typingTimers.current = steps.map((v, i) => window.setTimeout(() => setManualTyped(v), (reduce ? 0 : 700) + i * (reduce ? 0 : 260)))
+  }
 
   return (
     // Just the app screen, no device frame or logo. The Figma panel's (13:7136) size is kept as breathing room
     // around the screen so its shadow has space.
-    <div className="relative font-ui" style={{ width: PHONE_W, height: PHONE_H }}>
+    <div ref={self} className="relative font-ui" style={{ width: PHONE_W, height: PHONE_H }}>
       {/* App screen (Figma 11:4878) */}
       <div
-        className="absolute overflow-hidden rounded-[20px] shadow-[0_18px_40px_-12px_rgb(0_0_0/0.55),0_4px_12px_rgb(0_0_0/0.25)]"
+        className="pointer-events-auto absolute overflow-hidden rounded-[20px] shadow-[0_18px_40px_-12px_rgb(0_0_0/0.55),0_4px_12px_rgb(0_0_0/0.25)]"
         // Dark base: the light screen colour only sits under the list, so no pale hairline shows around the
         // header's rounded top corners.
         style={{ background: COLORS.header, top: SCREEN_TOP, left: SIDE, width: SCREEN_W, height: SCREEN_H }}
@@ -295,17 +363,35 @@ export function ChecklistPhone({ progress, visibleH = SCREEN_H }: { progress: Mo
           >
             <div ref={(el) => { cards.current[0] = el }}>
               <Card q="Have you checked the lines?">
-                <YesNo answer={s.q1 ? 'yes' : null} noColor={COLORS.noGrey} tapKey={taps.q1} />
+                <YesNo
+                  question="Have you checked the lines?"
+                  answer={s.q1 ? 'yes' : null}
+                  noColor={COLORS.noGrey}
+                  tapKey={taps.q1}
+                  onTap={s.q === 0 && !s.q1 ? tapQ1 : undefined}
+                />
               </Card>
             </div>
             <div ref={(el) => { cards.current[1] = el }}>
               <Card q="Is the fuel level at least 75%?">
-                <YesNo answer={s.q2 ? 'yes' : null} noColor={COLORS.noGrey} tapKey={taps.q2} />
+                <YesNo
+                  question="Is the fuel level at least 75%?"
+                  answer={s.q2 ? 'yes' : null}
+                  noColor={COLORS.noGrey}
+                  tapKey={taps.q2}
+                  onTap={s.q === 1 && !s.q2 ? tapQ2 : undefined}
+                />
               </Card>
             </div>
             <div ref={(el) => { cards.current[2] = el }}>
-              <Card q="Did you check the battery health?">
-                <YesNo answer={s.q3 ? 'no' : null} noColor={noColor} tapKey={taps.q3} />
+              <Card q="Is the battery fully charged?">
+                <YesNo
+                  question="Is the battery fully charged?"
+                  answer={s.q3 ? 'no' : null}
+                  noColor={noColor}
+                  tapKey={taps.q3}
+                  onTap={s.q === 2 && !s.q3 ? tapQ3 : undefined}
+                />
                 {s.q3 && <EnergyField typed={s.typed} />}
               </Card>
             </div>
@@ -313,6 +399,29 @@ export function ChecklistPhone({ progress, visibleH = SCREEN_H }: { progress: Mo
         </div>
       </div>
     </div>
+  )
+}
+
+/** Small down arrow that bobs gently (still for reduced motion), matching the cue on the dots infographic. */
+function ScrollArrow() {
+  const reduce = useReducedMotion()
+  return (
+    <motion.svg
+      aria-hidden
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="shrink-0"
+      animate={reduce ? undefined : { y: [0, 3, 0] }}
+      transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+    >
+      <path d="M8 2.5v10M3.5 8.5 8 13l4.5-4.5" />
+    </motion.svg>
   )
 }
 
@@ -327,6 +436,8 @@ export const CHECKLIST_PHONE_SIZE = { width: PHONE_W, height: PHONE_H }
  */
 /** Stage width below which the phone stacks under the truck. */
 export const STACK_BELOW = 900
+/** Phones/tablets: the scroll cue sits at the top of the stage, clear of the 62px masthead that overlaps it. */
+const HINT_TOP = 62 + 24
 
 export function ChecklistPhoneOverlay({ progress }: { progress: MotionValue<number> }) {
   const box = useRef<HTMLDivElement>(null)
@@ -356,6 +467,25 @@ export function ChecklistPhoneOverlay({ progress }: { progress: MotionValue<numb
     ? { left: (size.w - w) / 2, top: size.h * 0.49 }
     : { left: size.w - w - Math.max(32, size.w * 0.07), top: (size.h - h) / 2 }
 
+  // The app screen's own edges (the phone box adds shadow room around it), for placing the scroll cue.
+  const screen = {
+    left: style.left + SIDE * scale,
+    width: SCREEN_W * scale,
+    top: style.top + SCREEN_TOP * scale,
+    bottom: style.top + (SCREEN_TOP + SCREEN_H) * scale,
+  }
+  // Cue height, measured, so on phones the truck's canvas can stop just above it.
+  const hint = useRef<HTMLDivElement>(null)
+  const [hintH, setHintH] = useState(20)
+  useLayoutEffect(() => {
+    const el = hint.current
+    if (!el) return
+    const ro = new ResizeObserver(([e]) => setHintH(e.contentRect.height))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [size.w])
+  const HINT_GAP = 16
+
   // Give the 3D truck only the space the phone leaves free: left of it on desktop, above it on mobile. The module
   // auto-fits the truck to its canvas, so it is centred in that space (vertically level with the phone on desktop)
   // and can never run underneath the phone, at any screen size.
@@ -364,14 +494,16 @@ export function ChecklistPhoneOverlay({ progress }: { progress: MotionValue<numb
     if (!canvas || !size.w) return
     const gap = 16
     if (compact) {
-      Object.assign(canvas.style, { inset: 'auto', left: '0', top: '0', width: '100%', height: `${Math.max(160, style.top - gap)}px` })
+      // The cue sits above the truck on phones, so the truck gets the space between the cue and the phone.
+      const top = HINT_TOP + hintH + gap / 2
+      Object.assign(canvas.style, { inset: 'auto', left: '0', top: `${top}px`, width: '100%', height: `${Math.max(160, style.top - gap / 2 - top)}px` })
     } else {
       Object.assign(canvas.style, { inset: 'auto', left: '0', top: '0', height: '100%', width: `${Math.max(240, style.left - gap)}px` })
     }
     return () => {
       Object.assign(canvas.style, { inset: '', left: '', top: '', width: '', height: '' })
     }
-  }, [compact, size.w, style.left, style.top])
+  }, [compact, size.w, style.left, style.top, hintH])
 
   return (
     <div ref={box} className="pointer-events-none absolute inset-0 z-[3]">
@@ -380,6 +512,22 @@ export function ChecklistPhoneOverlay({ progress }: { progress: MotionValue<numb
           <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }}>
             <ChecklistPhone progress={progress} visibleH={visibleH} />
           </div>
+        </div>
+      )}
+      {size.w > 0 && (
+        // Scroll cue: 16px under the screen on desktop; above the truck on phones and tablets (the screen runs off the
+        // bottom there, and a line squeezed between truck and phone read awkwardly).
+        <div
+          ref={hint}
+          className="absolute flex items-center justify-center gap-2 px-4 text-center text-[14px] leading-snug text-balance text-white/60"
+          style={
+            compact
+              ? { left: 0, right: 0, top: HINT_TOP }
+              : { left: screen.left + screen.width / 2, top: screen.bottom + HINT_GAP, transform: 'translateX(-50%)', whiteSpace: 'nowrap' }
+          }
+        >
+          <ScrollArrow />
+          <span>Please keep scrolling or interact with Armoury</span>
         </div>
       )}
     </div>

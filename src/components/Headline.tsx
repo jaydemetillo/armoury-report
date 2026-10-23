@@ -40,7 +40,7 @@ export function Headline() {
         }`}
       >
         <div>
-          <p className="kicker mb-6">Product story · Singapore Civil Defence Force</p>
+          <p className="kicker mb-6 !text-white">Product story · Singapore Civil Defence Force</p>
           <SplitReveal
             as="h1"
             trigger="load"
@@ -65,12 +65,13 @@ export function Headline() {
             How a paper checklist problem became Armoury, the platform SCDF now uses every day to keep its
             emergency vehicles, equipment and frontline crews ready.
           </SplitReveal>
-          <div className={`mt-9 flex flex-wrap items-center ${centred ? 'justify-center' : ''} gap-x-4 gap-y-1 text-[14px] text-white/55`}>
+          <div className="mt-9 flex flex-col items-center gap-1 text-center text-[14px] text-white/55">
             <span className="font-semibold text-white">By the Armoury team, Open Government Products</span>
-            <span aria-hidden>·</span>
-            <time dateTime="2026-10">October 2026</time>
-            <span aria-hidden>·</span>
-            <span>9 min read</span>
+            <div className="flex items-center gap-x-4">
+              <time dateTime="2026-10">October 2026</time>
+              <span aria-hidden>·</span>
+              <span>9 min read</span>
+            </div>
           </div>
         </div>
         {SHOW_HERO_INTRO_CHECKLIST && <HeroIntroChecklist className="mx-auto max-w-[420px] lg:max-w-[520px]" />}

@@ -51,7 +51,7 @@ export function BeforeAfter() {
   }, [seen])
 
   return (
-    <section ref={ref} aria-label="Before and after Armoury" className="mx-auto my-16 max-w-[1000px] px-5">
+    <section ref={ref} id="change" aria-label="Before and after Armoury" className="mx-auto scroll-mt-20 my-16 max-w-[1000px] px-5">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <h3 className="m-0 font-serif text-[34px] leading-tight font-normal">What changed for SCDF</h3>
         <div role="radiogroup" aria-label="Show" className="relative flex rounded-full bg-paper-2 p-1 text-[16px] font-medium">

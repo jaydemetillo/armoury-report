@@ -34,7 +34,7 @@ export function DashboardIterations() {
   const { scrollYProgress } = useScroll({ target: hero, offset: ['start end', 'end start'] })
   const photoY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%'])
   return (
-    <section aria-label="Show the decision, not the data" className="relative mt-0 bg-white">
+    <section id="decision" aria-label="Show the decision, not the data" className="relative mt-0 scroll-mt-[62px] bg-white">
       {/* Photo hero: the station photo under the headline, fading into white where the dashboards begin. */}
       <div ref={hero} className="relative h-[min(92svh,900px)] min-h-[560px] overflow-hidden">
         <motion.img

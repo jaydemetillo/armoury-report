@@ -32,7 +32,7 @@ export function Lessons() {
     <>
     {/* Video hero: the section heading at headline size, white, over firefighters talking it through. A 20% black
         screen keeps the text readable, and the bottom fades into the page so it runs straight into the tabs below. */}
-    <section aria-label="What worked, and what got hard" className="relative isolate mt-20 flex h-[min(80svh,760px)] min-h-[480px] items-center justify-center overflow-hidden bg-[#0d0d0d] px-5 text-center">
+    <section id="lessons" aria-label="What worked, and what got hard" className="relative isolate scroll-mt-[62px] mt-20 flex h-[min(80svh,760px)] min-h-[480px] items-center justify-center overflow-hidden bg-[#0d0d0d] px-5 text-center">
       <div aria-hidden className="absolute inset-0 -z-10 motion-reduce:hidden">
         <CrossfadeLoopVideo src={`${import.meta.env.BASE_URL}video/firefighters-discuss.mp4`} end={LOOP_END} fade={1.2} />
       </div>
@@ -56,8 +56,8 @@ export function Lessons() {
       <div role="tablist" className="mb-6 flex gap-6 border-b border-rule">
         {(
           [
-            ['worked', `What worked · ${worked.length}`],
-            ['hard', `What broke or got hard · ${hard.length}`],
+            ['worked', 'What worked'],
+            ['hard', 'What broke or got hard'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -68,14 +68,19 @@ export function Lessons() {
               setTab(id)
               setOpen(0)
             }}
-            className={`relative cursor-pointer pb-3 text-[14px] font-medium ${tab === id ? 'text-ink' : 'text-muted hover:text-ink'}`}
+            className={`relative cursor-pointer pb-3 text-[14px] font-medium ${id === 'worked' ? 'text-[var(--accent)]' : tab === id ? 'text-ink' : 'text-muted hover:text-ink'}`}
           >
             {label}
-            {tab === id && <motion.span layoutId="lesson-tab" className="absolute right-0 bottom-[-1px] left-0 h-[2px] bg-[var(--accent)]" />}
+            {tab === id && (
+              <motion.span
+                layoutId="lesson-tab"
+                className={`absolute right-0 bottom-[-1px] left-0 h-[2px] ${id === 'worked' ? 'bg-[var(--accent)]' : 'bg-muted'}`}
+              />
+            )}
           </button>
         ))}
       </div>
-      <ol className="m-0 list-none p-0">
+      <ul className="m-0 list-none p-0">
         {items.map(([title, body], i) => (
           <li key={title} className="border-b border-rule">
             <button
@@ -83,8 +88,7 @@ export function Lessons() {
               aria-expanded={open === i}
               className="flex w-full cursor-pointer items-baseline gap-5 py-4 text-left"
             >
-              <span className="w-6 shrink-0 text-[16px] text-muted tabular">{String(i + 1).padStart(2, '0')}</span>
-              <span className="flex-1 font-serif text-[26px] leading-tight">{title}</span>
+              <span className={`flex-1 font-serif text-[26px] leading-tight ${tab === 'worked' ? 'text-[var(--accent)]' : ''}`}>{title}</span>
               <motion.span aria-hidden animate={{ rotate: open === i ? 45 : 0 }} className="text-[22px] text-muted">
                 +
               </motion.span>
@@ -98,13 +102,13 @@ export function Lessons() {
                   transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="m-0 pb-5 pl-11 text-[16px] leading-relaxed text-ink-2">{body}</p>
+                  <p className="m-0 pb-5 text-[16px] leading-relaxed text-ink-2">{body}</p>
                 </motion.div>
               )}
             </AnimatePresence>
           </li>
         ))}
-      </ol>
+      </ul>
     </section>
     </>
   )

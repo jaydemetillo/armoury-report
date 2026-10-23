@@ -42,6 +42,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* No white track behind the page scrollbar: only the thumb shows, over the page itself. */
+  scrollbar-color: var(--color-muted) transparent;
 }
 
 body {
