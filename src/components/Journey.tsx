@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { SplitReveal } from '@/components/SplitReveal'
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'motion/react'
 import { RevealLine } from '@/components/RevealLine'
 
@@ -176,7 +177,9 @@ export function Journey() {
         <div className="pl-[96px] sm:pl-[112px] lg:pl-[224px]">
           <div className="pt-2">
             <p className="kicker mb-2">The journey at a glance</p>
-            <h2 className="section-title m-0 mb-4 max-w-[18ch]">Seven chapters, from binder to backbone.</h2>
+            <SplitReveal as="h2" variant="lines" trigger="view" className="section-title m-0 mb-4 max-w-[18ch]">
+              Seven chapters, from binder to backbone.
+            </SplitReveal>
           </div>
           <ol className="m-0 list-none p-0">
             {chapters.map((c, i) => (
